@@ -7,6 +7,26 @@
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs">docs</a> will be your guide.</p>
+  <h1>Game Board</h1>
+  <ion-grid>
+    <ion-row *ngFor="let row of gameBoard; let r=index">
+      <ion-col class="tile" *ngFor="let col of row; let c=index">
+        <div id="board-{{r}}-{{c}}" (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)"
+          draggable="true">
+          {{col}}
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <h1>Available Tiles</h1>
+  <ion-grid>
+    <ion-row *ngFor="let row of letters; let r=index">
+      <ion-col class="tile" *ngFor="let col of row; let c=index">
+        <div id="tiles-{{r}}-{{c}}" (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)"
+          draggable="true">
+          {{col}}
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
