@@ -6,12 +6,12 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [class.isDragging]="isDragging">
   <div class="game-wrapper" padding>
     <ion-grid class="game-board" padding>
       <ion-row *ngFor="let row of gameBoard; let r=index">
         <ion-col class="board" *ngFor="let col of row; let c=index">
-          <div id="board-{{r}}-{{c}}" (dragenter)="dragEnter($event)" (dragexit)="dragExit($event)" (dragleave)="dragLeave($event)"
+          <div id="board-{{r}}-{{c}}" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)"
             (dragend)="dragEnd($event)" (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)"
             [draggable]="canDrag(col)">
             <img [src]="url(col)" [alt]="col" class="tile-image">
@@ -19,17 +19,15 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <div class="shelf">
-      <ng-container *ngFor="let row of letters; let r=index">
-        <ng-container *ngFor="let col of row; let c=index">
+    <div class="shelf" id="shelf-0-0" (drop)="drop($event)" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)" (dragend)="dragEnd($event)" (dragover)="dragOver($event)">
+      <ng-container *ngFor="let e of letters; let i=index">
+        <!-- <ng-container *ngFor="let col of row; let c=index"> -->
           <div class="tile">
-            <div id="tiles-{{r}}-{{c}}" [class]="col" (dragenter)="dragEnter($event)" (dragexit)="dragExit($event)"
-            (dragleave)="dragLeave($event)" (dragend)="dragEnd($event)" (drop)="drop($event)" (dragover)="dragOver($event)"
-            (dragstart)="dragStart($event)" [draggable]="canDrag(col)">
-            <img [src]="url(col)" [alt]="col" class="tile-image">
+            <div id="tiles-{{i}}-0" (dragstart)="dragStart($event)" [draggable]="canDrag(e)">
+              <img [src]="url(e)" [alt]="e" class="tile-image">
             </div>
           </div>
-        </ng-container>
+        <!-- </ng-container> -->
       </ng-container>
     </div>
   </div>

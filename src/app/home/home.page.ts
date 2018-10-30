@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from 'constants';
 
 @Component({
   selector: 'app-home',
@@ -6,19 +7,22 @@ import { Component } from '@angular/core';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  letters = [
-    ['A', 'B', 'C', 'D'],
-    ['E', 'F', 'G', 'H'],
-    ['I', 'J', 'K', 'L'],
-    ['M', 'N', 'O', 'P']
-  ];
+  // letters = [
+  //   ['A', 'B', 'C', 'D'],
+  //   ['E', 'F', 'G', 'H'],
+  //   ['I', 'J', 'K', 'L'],
+  //   ['M', 'N', 'O', 'P']
+  // ];
 
-  solution = [
-    ['A', 'B', 'C', 'D'],
-    ['E', 'F', 'G', 'H'],
-    ['I', 'J', 'K', 'L'],
-    ['M', 'N', 'O', 'P']
-  ];
+  solution = 'MADEAREADEAREARN';
+  letters = this.solution.split('').sort();
+
+  // solution = [
+  //   ['A', 'B', 'C', 'D'],
+  //   ['E', 'F', 'G', 'H'],
+  //   ['I', 'J', 'K', 'L'],
+  //   ['M', 'N', 'O', 'P']
+  // ];
 
   gameBoard = [
     ['*', '*', '*', '*'],
@@ -26,6 +30,8 @@ export class HomePage {
     ['*', '*', '*', '*'],
     ['*', '*', '*', '*'],
   ];
+
+  isDragging = false;
 
   constructor() {
 
@@ -47,6 +53,7 @@ export class HomePage {
   }
 
   dragStart(ev) {
+    this.isDragging = true;
     console.log('Drag Start:', ev.target);
     // Set the drag's format and data. Use the event target's id for the data.
     const values = ev.target.id.split('-');
@@ -61,20 +68,26 @@ export class HomePage {
   dragEnter(ev) {
     ev.preventDefault();
     ev.stopPropagation(); // stop it here to prevent it bubble up
+    const element = <HTMLElement>(ev.currentTarget);
+    if (element) {
+      element.classList.add('hover');
+    }
     console.log('Enter:', ev);
   }
 
-  dragExit(ev) {
+  dragLeave(ev: DragEvent) {
     ev.stopPropagation(); // stop it here to prevent it bubble up
-    console.log('Exit:', ev);
-  }
-
-  dragLeave(ev) {
-    ev.stopPropagation(); // stop it here to prevent it bubble up
+    const element = <HTMLElement>(ev.currentTarget);
+    if (element) {
+      element.classList.remove('hover');
+    }
     console.log('Leave:', ev);
   }
 
   dragEnd(ev) {
+    this.isDragging = false;
+    const elements = document.getElementsByClassName('hover');
+    Array.from(elements).forEach((e) => e.classList.remove('hover'));
     console.log('End:', ev.dataTransfer.dropEffect);
   }
 
@@ -91,27 +104,45 @@ export class HomePage {
     this.swapTiles(dropSource, dropDest);
   }
 
+  isLetter(val) {
+    return (/[A-Za-z]/.test(val));
+  }
+
   swapTiles(source, destination) {
     const swapFn = {
-      boardboard: (src, dest) => {
+      boardboard: (src, dest) => { // Dragging a tile from one game board cell to another.
         const tmp = this.gameBoard[dest.row][dest.col];
         this.gameBoard[dest.row][dest.col] = this.gameBoard[src.row][src.col];
         this.gameBoard[src.row][src.col] = tmp;
       },
-      boardtiles: (src, dest) => {
-        const tmp = this.letters[dest.row][dest.col];
-        this.letters[dest.row][dest.col] = this.gameBoard[src.row][src.col];
-        this.gameBoard[src.row][src.col] = tmp;
+      boardtiles: (src, dest) => {  // No-op
+        // const tmp = this.letters[dest.row][dest.col];
+        // this.letters[dest.row] = this.gameBoard[src.row][src.col];
+        // this.gameBoard[src.row][src.col] = tmp;
       },
-      tilesboard: (src, dest) => {
+      tilesboard: (src, dest) => { // Dragging a tile from the shelf to the game board.
         const tmp = this.gameBoard[dest.row][dest.col];
-        this.gameBoard[dest.row][dest.col] = this.letters[src.row][src.col];
-        this.letters[src.row][src.col] = tmp;
+        this.gameBoard[dest.row][dest.col] = this.letters[src.row];
+        if (this.isLetter(tmp)) {
+          // Swap
+          this.letters[src.row] = tmp;
+        } else {
+          // Remove it
+          this.letters.splice(src.row, 1);
+        }
       },
-      tilestiles: (src, dest) => {
-        const tmp = this.letters[dest.row][dest.col];
-        this.letters[dest.row][dest.col] = this.letters[src.row][src.col];
-        this.letters[src.row][src.col] = tmp;
+      tilestiles: (src, dest) => {  // No-op
+        // const tmp = this.letters[dest.row][dest.col];
+        // this.letters[dest.row] = this.letters[src.row];
+        // this.letters[src.row] = tmp;
+      },
+      boardshelf: (src, dest) => { // Dragging a tile from the game board to the shelf.
+        this.letters.push(this.gameBoard[src.row][src.col]);
+        this.gameBoard[src.row][src.col] = '*';
+      },
+      tilesshelf: (src, dest) => { // No-op
+        // this.letters.push(this.gameBoard[src.row][src.col]);
+        // this.gameBoard[src.row][src.col] = '*';
       }
     };
 
