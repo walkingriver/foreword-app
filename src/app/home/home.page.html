@@ -11,7 +11,8 @@
   <ion-grid>
     <ion-row *ngFor="let row of gameBoard; let r=index">
       <ion-col class="tile" *ngFor="let col of row; let c=index">
-        <div id="board-{{r}}-{{c}}" (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)"
+        <div id="board-{{r}}-{{c}}" (dragenter)="dragEnter($event)" (dragexit)="dragExit($event)" (dragleave)="dragLeave($event)"
+          (dragend)="dragEnd($event)" (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)"
           draggable="true">
           {{col}}
         </div>
@@ -22,7 +23,8 @@
   <ion-grid>
     <ion-row *ngFor="let row of letters; let r=index">
       <ion-col class="tile" *ngFor="let col of row; let c=index">
-        <div id="tiles-{{r}}-{{c}}" (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)"
+        <div id="tiles-{{r}}-{{c}}" (dragenter)="dragEnter($event)" (dragexit)="dragExit($event)" (dragleave)="dragLeave($event)"
+          (dragend)="dragEnd($event)" (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)"
           draggable="true">
           {{col}}
         </div>

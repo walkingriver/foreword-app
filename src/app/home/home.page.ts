@@ -27,9 +27,14 @@ export class HomePage {
     ['*', '*', '*', '*'],
   ];
 
+  constructor() {
+
+  }
+
   dragOver(ev) {
     console.log('Drag Over: ', ev.target);
     ev.preventDefault();
+    ev.stopPropagation();
   }
 
   dragStart(ev) {
@@ -41,6 +46,27 @@ export class HomePage {
     dropSource.row = values[1];
     dropSource.col = values[2];
     ev.dataTransfer.setData('text/json', JSON.stringify(dropSource));
+    ev.dataTransfer.effectAllowed = 'copyLink';
+  }
+
+  dragEnter(ev) {
+    ev.preventDefault();
+    ev.stopPropagation(); // stop it here to prevent it bubble up
+    console.log('Enter:', ev);
+  }
+
+  dragExit(ev) {
+    ev.stopPropagation(); // stop it here to prevent it bubble up
+    console.log('Exit:', ev);
+  }
+  
+  dragLeave(ev) {
+    ev.stopPropagation(); // stop it here to prevent it bubble up
+    console.log('Leave:', ev);
+  }
+
+  dragEnd(ev) {
+    console.log('End:', ev.dataTransfer.dropEffect);
   }
 
   drop(ev) {
@@ -58,22 +84,22 @@ export class HomePage {
 
   swapTiles(source, destination) {
     const swapFn = {
-      boardboard:  (src, dest) => {
+      boardboard: (src, dest) => {
         const tmp = this.gameBoard[dest.row][dest.col];
         this.gameBoard[dest.row][dest.col] = this.gameBoard[src.row][src.col];
         this.gameBoard[src.row][src.col] = tmp;
       },
-      boardtiles:  (src, dest) => {
+      boardtiles: (src, dest) => {
         const tmp = this.letters[dest.row][dest.col];
         this.letters[dest.row][dest.col] = this.gameBoard[src.row][src.col];
         this.gameBoard[src.row][src.col] = tmp;
       },
-      tilesboard:  (src, dest) => {
+      tilesboard: (src, dest) => {
         const tmp = this.gameBoard[dest.row][dest.col];
         this.gameBoard[dest.row][dest.col] = this.letters[src.row][src.col];
         this.letters[src.row][src.col] = tmp;
       },
-      tilestiles:  (src, dest) => {
+      tilestiles: (src, dest) => {
         const tmp = this.letters[dest.row][dest.col];
         this.letters[dest.row][dest.col] = this.letters[src.row][src.col];
         this.letters[src.row][src.col] = tmp;
