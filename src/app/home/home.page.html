@@ -1,34 +1,36 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Ionic Blank
+      Wurdz
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  <h1>Game Board</h1>
-  <ion-grid>
-    <ion-row *ngFor="let row of gameBoard; let r=index">
-      <ion-col class="tile" *ngFor="let col of row; let c=index">
-        <div id="board-{{r}}-{{c}}" (dragenter)="dragEnter($event)" (dragexit)="dragExit($event)" (dragleave)="dragLeave($event)"
-          (dragend)="dragEnd($event)" (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)"
-          draggable="true">
-          {{col}}
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <h1>Available Tiles</h1>
-  <ion-grid>
-    <ion-row *ngFor="let row of letters; let r=index">
-      <ion-col class="tile" *ngFor="let col of row; let c=index">
-        <div id="tiles-{{r}}-{{c}}" (dragenter)="dragEnter($event)" (dragexit)="dragExit($event)" (dragleave)="dragLeave($event)"
-          (dragend)="dragEnd($event)" (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)"
-          draggable="true">
-          {{col}}
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content>
+  <div class="game-wrapper" padding>
+    <ion-grid class="game-board" padding>
+      <ion-row *ngFor="let row of gameBoard; let r=index">
+        <ion-col class="board" *ngFor="let col of row; let c=index">
+          <div id="board-{{r}}-{{c}}" (dragenter)="dragEnter($event)" (dragexit)="dragExit($event)" (dragleave)="dragLeave($event)"
+            (dragend)="dragEnd($event)" (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)"
+            [draggable]="canDrag(col)">
+            <img [src]="url(col)" [alt]="col" class="tile-image">
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <div class="shelf">
+      <ng-container *ngFor="let row of letters; let r=index">
+        <ng-container *ngFor="let col of row; let c=index">
+          <div class="tile">
+            <div id="tiles-{{r}}-{{c}}" [class]="col" (dragenter)="dragEnter($event)" (dragexit)="dragExit($event)"
+            (dragleave)="dragLeave($event)" (dragend)="dragEnd($event)" (drop)="drop($event)" (dragover)="dragOver($event)"
+            (dragstart)="dragStart($event)" [draggable]="canDrag(col)">
+            <img [src]="url(col)" [alt]="col" class="tile-image">
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
 </ion-content>

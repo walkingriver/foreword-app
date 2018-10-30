@@ -31,6 +31,15 @@ export class HomePage {
 
   }
 
+  url(val: string) {
+    const letter = val.toLowerCase();
+    return `./assets/images/${letter}.png`;
+  }
+
+  canDrag(val) {
+    return (/[A-Za-z]/.test(val));
+  }
+
   dragOver(ev) {
     console.log('Drag Over: ', ev.target);
     ev.preventDefault();
@@ -59,7 +68,7 @@ export class HomePage {
     ev.stopPropagation(); // stop it here to prevent it bubble up
     console.log('Exit:', ev);
   }
-  
+
   dragLeave(ev) {
     ev.stopPropagation(); // stop it here to prevent it bubble up
     console.log('Leave:', ev);
@@ -76,7 +85,7 @@ export class HomePage {
     const dropSource = JSON.parse(ev.dataTransfer.getData('text/json'));
     // ev.target.appendChild(document.getElementById(data));
     const dropDest: { set: string, row: number, col: number } = { set: '', row: -1, col: -1 };
-    [dropDest.set, dropDest.row, dropDest.col] = ev.target.id.split('-');
+    [dropDest.set, dropDest.row, dropDest.col] = ev.currentTarget.id.split('-');
     console.log('Dropped: ', dropSource, dropDest);
 
     this.swapTiles(dropSource, dropDest);
