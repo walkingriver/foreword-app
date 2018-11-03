@@ -7,22 +7,14 @@ import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from 'constants';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  // letters = [
-  //   ['A', 'B', 'C', 'D'],
-  //   ['E', 'F', 'G', 'H'],
-  //   ['I', 'J', 'K', 'L'],
-  //   ['M', 'N', 'O', 'P']
-  // ];
+  puzzle =
+    {
+      size: 4,
+      solution: 'MADEAREADEAREARN'
+    };
 
-  solution = 'MADEAREADEAREARN';
-  letters = this.solution.split('').sort();
-
-  // solution = [
-  //   ['A', 'B', 'C', 'D'],
-  //   ['E', 'F', 'G', 'H'],
-  //   ['I', 'J', 'K', 'L'],
-  //   ['M', 'N', 'O', 'P']
-  // ];
+  letters = []; // this.puzzle.solution.split('').sort();
+  totalMoves = 0;
 
   gameBoard = [
     ['*', '*', '*', '*'],
@@ -34,7 +26,28 @@ export class HomePage {
   isDragging = false;
 
   constructor() {
+    // this.gameBoard = this.puzzleToGameBoard(this.puzzle);
+    this.newGame();
+  }
 
+  newGame() {
+    this.letters = this.puzzle.solution.split('').sort();
+  }
+  puzzleToGameBoard(puzzle): string[][] {
+    const size = puzzle.size;
+    const board: string[][] = [];
+    const letters: string[] = puzzle.solution.split('').sort();
+
+    letters.forEach((v, i) => {
+      const row = Math.floor(i / size);
+      const col = i % size;
+      if (col === 0) {
+        board[row] = [];
+      }
+      board[row][col] = v;
+    });
+
+    return board;
   }
 
   url(val: string) {
@@ -47,14 +60,14 @@ export class HomePage {
   }
 
   dragOver(ev) {
-    console.log('Drag Over: ', ev.target);
+    // console.log('Drag Over: ', ev.target);
     ev.preventDefault();
     ev.stopPropagation();
   }
 
   dragStart(ev) {
     this.isDragging = true;
-    console.log('Drag Start:', ev.target);
+    // console.log('Drag Start:', ev.target);
     // Set the drag's format and data. Use the event target's id for the data.
     const values = ev.target.id.split('-');
     const dropSource: { set: string, row: number, col: number } = { set: '', row: -1, col: -1 };
@@ -72,7 +85,7 @@ export class HomePage {
     if (element) {
       element.classList.add('hover');
     }
-    console.log('Enter:', ev);
+    // console.log('Enter:', ev);
   }
 
   dragLeave(ev: DragEvent) {
@@ -81,25 +94,25 @@ export class HomePage {
     if (element) {
       element.classList.remove('hover');
     }
-    console.log('Leave:', ev);
+    // console.log('Leave:', ev);
   }
 
   dragEnd(ev) {
     this.isDragging = false;
     const elements = document.getElementsByClassName('hover');
     Array.from(elements).forEach((e) => e.classList.remove('hover'));
-    console.log('End:', ev.dataTransfer.dropEffect);
+    // console.log('End:', ev.dataTransfer.dropEffect);
   }
 
   drop(ev) {
     ev.preventDefault();
-    console.log(ev);
+    // console.log(ev);
     // Get the data, which is the id of the drop target
     const dropSource = JSON.parse(ev.dataTransfer.getData('text/json'));
     // ev.target.appendChild(document.getElementById(data));
     const dropDest: { set: string, row: number, col: number } = { set: '', row: -1, col: -1 };
     [dropDest.set, dropDest.row, dropDest.col] = ev.currentTarget.id.split('-');
-    console.log('Dropped: ', dropSource, dropDest);
+    // console.log('Dropped: ', dropSource, dropDest);
 
     this.swapTiles(dropSource, dropDest);
   }
@@ -114,6 +127,7 @@ export class HomePage {
         const tmp = this.gameBoard[dest.row][dest.col];
         this.gameBoard[dest.row][dest.col] = this.gameBoard[src.row][src.col];
         this.gameBoard[src.row][src.col] = tmp;
+        this.totalMoves++;
       },
       boardtiles: (src, dest) => {  // No-op
         // const tmp = this.letters[dest.row][dest.col];
@@ -130,6 +144,7 @@ export class HomePage {
           // Remove it
           this.letters.splice(src.row, 1);
         }
+        this.totalMoves++;
       },
       tilestiles: (src, dest) => {  // No-op
         // const tmp = this.letters[dest.row][dest.col];
@@ -139,6 +154,7 @@ export class HomePage {
       boardshelf: (src, dest) => { // Dragging a tile from the game board to the shelf.
         this.letters.push(this.gameBoard[src.row][src.col]);
         this.gameBoard[src.row][src.col] = '*';
+        this.totalMoves++;
       },
       tilesshelf: (src, dest) => { // No-op
         // this.letters.push(this.gameBoard[src.row][src.col]);

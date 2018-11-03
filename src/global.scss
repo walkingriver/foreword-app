@@ -9,10 +9,10 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 .game-wrapper {
-  background-image: url(assets/images/green-bg.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
   height: 100%;
+  background-image: url(assets/images/brown-bg.jpg);
+  background-repeat: repeat-y;
+  background-size: cover;
 }
 
 ion-content {
@@ -20,10 +20,15 @@ ion-content {
   background-image: none;
 }
 
-.game-board {
+.game-board,
+.shelf {
   background-image: url(assets/images/wood-bg.jpg);
   background-repeat: no-repeat;
   background-size: cover;
+  border-radius: 2vw;
+  -webkit-box-shadow: 15px 15px 29px 1px rgba(0, 0, 0, 0.42);
+  -moz-box-shadow: 15px 15px 29px 1px rgba(0, 0, 0, 0.42);
+  box-shadow: 15px 15px 29px 1px rgba(0, 0, 0, 0.42);
 }
 
 .board {
@@ -37,20 +42,24 @@ ion-content {
   background-image: url(assets/images/wood.jpg);
   background-repeat: no-repeat;
   background-size: cover;
+  border-top-left-radius: 40%;
+  border-bottom-right-radius: 40%;
 }
 
 .tile {
   font-size: 1.25em;
   text-align: center;
   vertical-align: middle;
-  width: 12vw;
-  height: 12vw;
-  line-height: 12vw;
+  width: 13vw;
+  height: 13vw;
+  line-height: 13vw;
   display: inline-block;
   margin: 1px;
   background-image: url(assets/images/wood.jpg);
   background-repeat: no-repeat;
   background-size: cover;
+  border-top-left-radius: 30%;
+  border-bottom-right-radius: 30%;
 }
 
 .tile-image {
@@ -61,12 +70,30 @@ ion-content {
 
 .shelf {
   width: 100%;
-  min-height: 40px;
+  min-height: 15vw;
   margin-top: 10px;
+  padding: 10px;
 }
 
 .isDragging .hover {
   -webkit-box-shadow: 0px 0px 15px 5px rgba(255, 255, 190, .75);
   -moz-box-shadow: 0px 0px 15px 5px rgba(255, 255, 190, .75);
   box-shadow: 0px 0px 15px 5px rgba(255, 255, 190, .75);
+}
+
+.title {
+  width: 100%;
+  .tile {
+    background: none;
+    width: 10vw;
+    height: 10vw;
+  }
+}
+
+.status {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 5vw;
+  line-height: 5vw;
+  color: #ddd;
 }
