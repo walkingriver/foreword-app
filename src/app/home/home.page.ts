@@ -9,6 +9,7 @@ import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from 'constants';
 export class HomePage {
   puzzle =
     {
+      level: 0,
       size: 4,
       solution: 'MADEAREADEAREARN'
     };
