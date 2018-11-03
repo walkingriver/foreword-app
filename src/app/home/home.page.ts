@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from 'constants';
 
 @Component({
   selector: 'app-home',
@@ -25,6 +24,7 @@ export class HomePage {
   ];
 
   isDragging = false;
+  gameOver: boolean;
 
   constructor() {
     // this.gameBoard = this.puzzleToGameBoard(this.puzzle);
@@ -32,6 +32,7 @@ export class HomePage {
   }
 
   newGame() {
+    this.gameOver = false;
     this.letters = this.puzzle.solution.split('').sort();
   }
   puzzleToGameBoard(puzzle): string[][] {
@@ -51,13 +52,26 @@ export class HomePage {
     return board;
   }
 
+  testGame() {
+    return this.gameBoardToString() === this.puzzle.solution;
+  }
+
+  gameBoardToString() {
+    let board = '';
+    this.gameBoard.forEach( (row) => {
+      board += row.join('');
+    });
+
+    return board;
+  }
+
   url(val: string) {
     const letter = val.toLowerCase();
     return `./assets/images/${letter}.png`;
   }
 
   canDrag(val) {
-    return (/[A-Za-z]/.test(val));
+    return !this.gameOver && (/[A-Za-z]/.test(val));
   }
 
   dragOver(ev) {
@@ -103,6 +117,10 @@ export class HomePage {
     const elements = document.getElementsByClassName('hover');
     Array.from(elements).forEach((e) => e.classList.remove('hover'));
     // console.log('End:', ev.dataTransfer.dropEffect);
+
+    if (this.testGame()) {
+      this.gameOver = true;
+    }
   }
 
   drop(ev) {

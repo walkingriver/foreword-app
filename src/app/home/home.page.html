@@ -1,4 +1,4 @@
-<ion-header>  
+<ion-header>
   <ion-toolbar>
     <ion-title>
       Wurdz
@@ -9,7 +9,10 @@
 <ion-content>
   <div class="game-wrapper" [class.isDragging]="isDragging">
     <h3 class="title">
-      # {{puzzle.level}} / {{puzzle.size}} WORDS / Moves: {{totalMoves}}
+      # {{puzzle.level}} •
+      <span *ngIf="!gameOver">{{puzzle.size}} Words </span>
+      <span *ngIf="gameOver">You Win!</span>
+      • Moves: {{totalMoves}}
     </h3>
     <ion-grid class="game-board" padding>
       <ion-row *ngFor="let row of gameBoard; let r=index">
