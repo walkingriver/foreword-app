@@ -10,8 +10,7 @@
   <div class="game-wrapper" [class.isDragging]="isDragging">
     <h3 class="title">
       # {{puzzle.level}} •
-      <span *ngIf="!gameOver">{{puzzle.size}} Words </span>
-      <span *ngIf="gameOver">You Win!</span>
+      {{puzzle.size}} Words
       • Moves: {{totalMoves}}
     </h3>
     <ion-grid class="game-board" padding>
@@ -24,7 +23,7 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <div class="shelf" id="shelf-0-0" (drop)="drop($event)" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)"
+    <div *ngIf="!gameOver" class="shelf" id="shelf-0-0" (drop)="drop($event)" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)"
       (dragend)="dragEnd($event)" (dragover)="dragOver($event)">
       <ng-container *ngFor="let e of letters; let i=index">
         <!-- <ng-container *ngFor="let col of row; let c=index"> -->
@@ -35,6 +34,10 @@
         </div>
         <!-- </ng-container> -->
       </ng-container>
+    </div>
+    <div class="title" *ngIf="gameOver">
+        <h2>You Win!</h2>
+        <ion-button size="large" color="primary" (click)="newGame()">Next Game</ion-button>
     </div>
   </div>
 </ion-content>

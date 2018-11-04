@@ -33,7 +33,14 @@ export class HomePage {
 
   newGame() {
     this.gameOver = false;
-    this.letters = this.puzzle.solution.split('').sort();
+    this.gameBoard = [
+      ['M', 'A', 'D', 'E'],
+      ['A', 'R', 'E', 'A'],
+      ['D', 'E', 'A', 'R'],
+      ['E', 'A', 'R', '*'],
+    ];
+
+    this.letters = ['N']; // this.puzzle.solution.split('').sort();
   }
   puzzleToGameBoard(puzzle): string[][] {
     const size = puzzle.size;
@@ -58,7 +65,7 @@ export class HomePage {
 
   gameBoardToString() {
     let board = '';
-    this.gameBoard.forEach( (row) => {
+    this.gameBoard.forEach((row) => {
       board += row.join('');
     });
 
