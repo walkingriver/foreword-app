@@ -25,6 +25,7 @@ export class HomePage {
 
   isDragging = false;
   gameOver: boolean;
+  isRecycling: boolean;
 
   constructor() {
     // this.gameBoard = this.puzzleToGameBoard(this.puzzle);
@@ -32,15 +33,19 @@ export class HomePage {
   }
 
   newGame() {
-    this.gameOver = false;
-    this.gameBoard = [
-      ['M', 'A', 'D', 'E'],
-      ['A', 'R', 'E', 'A'],
-      ['D', 'E', 'A', 'R'],
-      ['E', 'A', 'R', '*'],
-    ];
+    this.isRecycling = true;
+    setTimeout(() => {
+      this.gameOver = false;
+      this.gameBoard = [
+        ['M', 'A', 'D', 'E'],
+        ['A', 'R', 'E', 'A'],
+        ['D', 'E', 'A', 'R'],
+        ['E', 'A', 'R', '*'],
+      ];
 
-    this.letters = ['N']; // this.puzzle.solution.split('').sort();
+      this.letters = ['N']; // this.puzzle.solution.split('').sort();
+      this.isRecycling = false;
+    }, 1000);
   }
   puzzleToGameBoard(puzzle): string[][] {
     const size = puzzle.size;
@@ -124,10 +129,6 @@ export class HomePage {
     const elements = document.getElementsByClassName('hover');
     Array.from(elements).forEach((e) => e.classList.remove('hover'));
     // console.log('End:', ev.dataTransfer.dropEffect);
-
-    if (this.testGame()) {
-      this.gameOver = true;
-    }
   }
 
   drop(ev) {
@@ -141,6 +142,10 @@ export class HomePage {
     // console.log('Dropped: ', dropSource, dropDest);
 
     this.swapTiles(dropSource, dropDest);
+
+    if (this.testGame()) {
+      this.gameOver = true;
+    }
   }
 
   isLetter(val) {

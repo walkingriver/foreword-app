@@ -16,7 +16,7 @@
     <ion-grid class="game-board" padding>
       <ion-row *ngFor="let row of gameBoard; let r=index">
         <ion-col class="board" *ngFor="let col of row; let c=index">
-          <div id="board-{{r}}-{{c}}" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)" (dragend)="dragEnd($event)"
+          <div class="board-tile" [class.boom]="isRecycling" id="board-{{r}}-{{c}}" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)" (dragend)="dragEnd($event)"
             (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)" [draggable]="canDrag(col)">
             <img [src]="url(col)" [alt]="col" class="tile-image">
           </div>
