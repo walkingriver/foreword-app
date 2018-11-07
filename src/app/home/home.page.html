@@ -1,10 +1,10 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-title>
       Wurdz
     </ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
   <div class="game-wrapper" [class.isDragging]="isDragging">
@@ -16,15 +16,16 @@
     <ion-grid class="game-board" padding>
       <ion-row *ngFor="let row of gameBoard; let r=index">
         <ion-col class="board" *ngFor="let col of row; let c=index">
-          <div class="board-tile" [class.boom]="isRecycling" id="board-{{r}}-{{c}}" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)" (dragend)="dragEnd($event)"
-            (drop)="drop($event)" (dragover)="dragOver($event)" (dragstart)="dragStart($event)" [draggable]="canDrag(col)">
+          <div class="board-tile" [class.boom]="isRecycling" id="board-{{r}}-{{c}}" (dragenter)="dragEnter($event)"
+            (dragleave)="dragLeave($event)" (dragend)="dragEnd($event)" (drop)="drop($event)" (dragover)="dragOver($event)"
+            (dragstart)="dragStart($event)" [draggable]="canDrag(col)">
             <img [src]="url(col)" [alt]="col" class="tile-image">
           </div>
         </ion-col>
       </ion-row>
     </ion-grid>
-    <div *ngIf="!gameOver" class="shelf" id="shelf-0-0" (drop)="drop($event)" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)"
-      (dragend)="dragEnd($event)" (dragover)="dragOver($event)">
+    <div *ngIf="!gameOver" class="shelf" id="shelf-0-0" (drop)="drop($event)" (dragenter)="dragEnter($event)"
+      (dragleave)="dragLeave($event)" (dragend)="dragEnd($event)" (dragover)="dragOver($event)">
       <ng-container *ngFor="let e of letters; let i=index">
         <!-- <ng-container *ngFor="let col of row; let c=index"> -->
         <div class="tile">
@@ -36,8 +37,33 @@
       </ng-container>
     </div>
     <div class="title" *ngIf="gameOver">
-        <h2>You Win!</h2>
-        <ion-button size="large" color="primary" (click)="newGame()">Next Game</ion-button>
+      <h2>You Win!</h2>
+      <ion-button size="large" color="primary" (click)="nextLevel()">Next Game</ion-button>
     </div>
   </div>
+  <ion-fab *ngIf="!gameOver" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon size="mini" name="settings" color="dark"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button (click)="newGame()">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="nextLevel()" *ngIf="isDebugging">
+        <ion-icon name="arrow-round-forward"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="prevLevel()" *ngIf="isDebugging">
+        <ion-icon name="arrow-round-back"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="winLevel()" *ngIf="isDebugging">
+        <ion-icon name="redo"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="!isMuted" (click)="isMuted = true">
+        <ion-icon name="volume-off"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="isMuted" (click)="isMuted = false">
+        <ion-icon name="volume-high"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>

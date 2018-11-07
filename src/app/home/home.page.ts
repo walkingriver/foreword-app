@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, isDevMode } from '@angular/core';
+import { Puzzle } from '../puzzle';
+import { GameService } from '../game.service';
 
 @Component({
   selector: 'app-home',
@@ -6,15 +8,17 @@ import { Component } from '@angular/core';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  puzzle =
+  puzzle: Puzzle =
     {
       level: 0,
       size: 4,
-      solution: 'MADEAREADEAREARN'
+      solution: ['MADEAREADEAREARN']
     };
 
   letters = []; // this.puzzle.solution.split('').sort();
   totalMoves = 0;
+  isDebugging: boolean = isDevMode();
+  isMuted: boolean;
 
   gameBoard = [
     ['*', '*', '*', '*'],
@@ -27,30 +31,53 @@ export class HomePage {
   gameOver: boolean;
   isRecycling: boolean;
 
-  constructor() {
-    // this.gameBoard = this.puzzleToGameBoard(this.puzzle);
+  constructor(private games: GameService) {
+    // Todo: Find out what level the player is on.
+    // Then use that level instead of 0.
+    this.loadLevel(0);
+  }
+
+  private loadLevel(level: number) {
+    this.puzzle = this.games.getByLevel(level);
     this.newGame();
   }
 
   newGame() {
-    this.isRecycling = true;
-    setTimeout(() => {
-      this.gameOver = false;
-      this.gameBoard = [
-        ['M', 'A', 'D', 'E'],
-        ['A', 'R', 'E', 'A'],
-        ['D', 'E', 'A', 'R'],
-        ['E', 'A', 'R', '*'],
-      ];
+    this.gameOver = false;
+    this.gameBoard = [
+      ['*', '*', '*', '*'],
+      ['*', '*', '*', '*'],
+      ['*', '*', '*', '*'],
+      ['*', '*', '*', '*'],
+    ];
 
-      this.letters = ['N']; // this.puzzle.solution.split('').sort();
+    this.letters = this.puzzle.solution[0].split('').sort();
+  }
+
+  nextLevel() {
+    this.loadLevel(this.puzzle.level + 1);
+  }
+
+  prevLevel() {
+    this.loadLevel(this.puzzle.level - 1);
+  }
+
+  winLevel() {
+    this.isRecycling = true;
+    this.gameOver = false;
+    setTimeout(() => {
+      this.gameBoard = this.puzzleToGameBoard(this.puzzle);
+      this.gameBoard[0][0] = '*';
+      this.letters = [];
+      this.letters.push(this.puzzle.solution[0][0]);
       this.isRecycling = false;
     }, 1000);
   }
+
   puzzleToGameBoard(puzzle): string[][] {
-    const size = puzzle.size;
+    const size = Math.sqrt(puzzle.solution[0].length);
     const board: string[][] = [];
-    const letters: string[] = puzzle.solution.split('').sort();
+    const letters: string[] = puzzle.solution[0].split('');
 
     letters.forEach((v, i) => {
       const row = Math.floor(i / size);
@@ -65,7 +92,7 @@ export class HomePage {
   }
 
   testGame() {
-    return this.gameBoardToString() === this.puzzle.solution;
+    return this.gameBoardToString() === this.puzzle.solution[0];
   }
 
   gameBoardToString() {
