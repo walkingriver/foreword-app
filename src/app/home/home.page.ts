@@ -42,7 +42,16 @@ export class HomePage {
     this.newGame();
   }
 
-  newGame() {
+  async newGame() {
+    if (!this.isMuted) {
+      try {
+        const audio = new Audio('./src/assets/sounds/shuffle.wav');
+        await audio.play();
+      } catch (error) {
+        // We can ignore this error.
+      }
+    }
+
     this.gameOver = false;
     this.gameBoard = [
       ['*', '*', '*', '*'],
@@ -158,7 +167,7 @@ export class HomePage {
     // console.log('End:', ev.dataTransfer.dropEffect);
   }
 
-  drop(ev) {
+  async drop(ev) {
     ev.preventDefault();
     // console.log(ev);
     // Get the data, which is the id of the drop target
@@ -169,6 +178,13 @@ export class HomePage {
     // console.log('Dropped: ', dropSource, dropDest);
 
     this.swapTiles(dropSource, dropDest);
+
+    if (!this.isMuted) {
+      const soundFiles = 4;
+      const whichSound = Math.floor(Math.random() * soundFiles) + 1;
+      const sound = new Audio(`./assets/sounds/drop${whichSound}.wav`);
+      await sound.play();
+    }
 
     if (this.testGame()) {
       this.gameOver = true;
