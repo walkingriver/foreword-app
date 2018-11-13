@@ -19,6 +19,7 @@ export class HomePage {
   totalMoves = 0;
   isDebugging: boolean = isDevMode();
   isMuted: boolean;
+  gameSize = 4;
 
   gameBoard = [
     ['*', '*', '*', '*'],
@@ -38,7 +39,7 @@ export class HomePage {
   }
 
   private loadLevel(level: number) {
-    this.puzzle = this.games.getByLevel(level);
+    this.puzzle = this.games.getByLevel(this.gameSize, level);
     this.newGame();
   }
 
@@ -53,12 +54,27 @@ export class HomePage {
     }
 
     this.gameOver = false;
-    this.gameBoard = [
-      ['*', '*', '*', '*'],
-      ['*', '*', '*', '*'],
-      ['*', '*', '*', '*'],
-      ['*', '*', '*', '*'],
-    ];
+    this.totalMoves = 0;
+
+    // This will either compute to 3, 4, or 5.
+    const square = this.puzzle.size / this.puzzle.solution.length;
+
+    this.gameBoard = [];
+
+    for (let i = 0; i < square; i++) {
+      const row = [];
+      for (let j = 0; j < square; j++) {
+        row.push('*');
+      }
+      this.gameBoard.push(row);
+    }
+
+    // this.gameBoard = [
+    //   ['*', '*', '*', '*'],
+    //   ['*', '*', '*', '*'],
+    //   ['*', '*', '*', '*'],
+    //   ['*', '*', '*', '*'],
+    // ];
 
     this.letters = this.puzzle.solution[0].split('').sort();
   }

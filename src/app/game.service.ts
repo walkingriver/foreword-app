@@ -10,8 +10,14 @@ export class GameService {
 
   constructor() { }
 
-  getByLevel(level: number): Puzzle {
-    const puzzle = games4[level];
+  getByLevel(size: number, level: number): Puzzle {
+    const puzzles = {
+      3: games3,
+      4: games4
+      // 5: games5
+    };
+
+    const puzzle = puzzles[size][level];
     puzzle.level = level;
     return puzzle;
   }
