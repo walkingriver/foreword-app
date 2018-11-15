@@ -22,6 +22,8 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
+      this.statusBar.overlaysWebView(false);
+      this.statusBar.backgroundColorByHexString('#C1A172');
       this.splashScreen.hide();
 
       // workaround to make scroll prevent work in iOS Safari > 10
