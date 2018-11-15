@@ -58,15 +58,16 @@ ion-content {
   font-size: 3em;
   text-align: center;
   vertical-align: middle;
-  border: transparent inset 2px;
+  border: #C1A172 inset 2px;
   width: 20vw;
   // height: 20vw;
   line-height: 15vw;
-  background-image: url(assets/images/wood.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
-  border-top-left-radius: 40%;
-  border-bottom-right-radius: 40%;
+  // background-image: url(assets/images/wood.jpg);
+  // background-repeat: no-repeat;
+  // background-size: cover;
+  // border-top-left-radius: 40%;
+  // border-bottom-right-radius: 40%;
+  border-radius: 12px;
 }
 
 .tile {
