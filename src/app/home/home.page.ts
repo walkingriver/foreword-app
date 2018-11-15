@@ -12,7 +12,8 @@ export class HomePage {
     {
       level: 0,
       size: 4,
-      solution: ['MADEAREADEAREARN']
+      // solution: ['MADEAREADEAREARN']
+      solution: ['FOURWORDACESMAST']
     };
 
   letters = []; // this.puzzle.solution.split('').sort();
@@ -36,6 +37,7 @@ export class HomePage {
     // Todo: Find out what level the player is on.
     // Then use that level instead of 0.
     this.loadLevel(0);
+    // this.newGame();
   }
 
   private loadLevel(level: number) {
@@ -68,13 +70,6 @@ export class HomePage {
       }
       this.gameBoard.push(row);
     }
-
-    // this.gameBoard = [
-    //   ['*', '*', '*', '*'],
-    //   ['*', '*', '*', '*'],
-    //   ['*', '*', '*', '*'],
-    //   ['*', '*', '*', '*'],
-    // ];
 
     this.letters = this.puzzle.solution[0].split('').sort();
   }
