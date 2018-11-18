@@ -41,3 +41,32 @@
 // .boom#board-4-2 { @include transform(0deg, 0px, -100px); }
 // .boom#board-4-3 { @include transform(15deg, 50px, -100px); }
 // .boom#board-4-4 { @include transform(30deg, 100px, -100px); }
+
+.flex-container {
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap; 
+}
+
+.flex-cell {
+  flex: 0 0 25%;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.flex-cell:before {
+  content: '';
+  display: table;
+  padding-top: 100%;
+}
+
+.flex-item {
+  flex-grow: 1;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -4,19 +4,30 @@
       {{puzzle.size}} Words
       • Moves: {{totalMoves}}
     </h3>
-    <ion-grid class="game-board" padding>
+    <!-- <ion-grid class="game-board" padding (dragover)="dragOver($event)" (dragend)="dragEnd($event)">
       <ion-row *ngFor="let row of gameBoard; let r=index">
         <ion-col class="board" *ngFor="let col of row; let c=index">
           <div class="board-tile" [class.boom]="isRecycling" id="board-{{r}}-{{c}}" (dragenter)="dragEnter($event)"
-            (dragleave)="dragLeave($event)" (dragend)="dragEnd($event)" (drop)="drop($event)" (dragover)="dragOver($event)"
+            (dragleave)="dragLeave($event)" (drop)="drop($event)" 
             (dragstart)="dragStart($event)" [draggable]="canDrag(col)">
             <img [src]="url(col)" [alt]="col" class="tile-image">
           </div>
         </ion-col>
       </ion-row>
-    </ion-grid>
+    </ion-grid> -->
+
+    <div class="flex-container game-board" padding (dragover)="dragOver($event)" (dragend)="dragEnd($event)">
+        <div class="flex-cell board" *ngFor="let c of gameBoardToString().split(''); let r=index">
+            <div class="flex-item board-tile" (dragenter)="dragEnter($event)"
+            (dragleave)="dragLeave($event)" (drop)="drop($event)" 
+            (dragstart)="dragStart($event)" draggable="true">
+              <img [src]="url(c)" [alt]="c" class="tile-image">
+            </div>
+        </div>
+    </div> 
+
     <div *ngIf="!gameOver" class="shelf" id="shelf-0-0" (drop)="drop($event)" (dragenter)="dragEnter($event)"
-      (dragleave)="dragLeave($event)" (dragend)="dragEnd($event)" (dragover)="dragOver($event)">
+      (dragleave)="dragLeave($event)" (dragover)="dragOver($event)">
       <ng-container *ngFor="let e of letters; let i=index">
         <!-- <ng-container *ngFor="let col of row; let c=index"> -->
         <div class="tile">
