@@ -44,7 +44,7 @@ export class AppComponent {
           // use this to make use of the scroll behaviour
           dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride,
           iterationInterval: 2,
-          forceApply: true
+          // forceApply: true
         });
         console.log('IsPolyFill: ', isPolyfill);
         if (supportsPassive) {

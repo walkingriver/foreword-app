@@ -16,22 +16,24 @@
       </ion-row>
     </ion-grid> -->
 
+    
     <div class="flex-container game-board" padding (dragover)="dragOver($event)" (dragend)="dragEnd($event)">
-        <div class="flex-cell board" *ngFor="let c of gameBoardToString().split(''); let r=index">
-            <div class="flex-item board-tile" (dragenter)="dragEnter($event)"
-            (dragleave)="dragLeave($event)" (drop)="drop($event)" 
-            (dragstart)="dragStart($event)" draggable="true">
-              <img [src]="url(c)" [alt]="c" class="tile-image">
-            </div>
+      <ng-container *ngFor="let row of gameBoard; let r=index">
+        <div class="flex-cell board" *ngFor="let letter of row; let c=index">
+          <div class="flex-item board-tile" (dragenter)="dragEnter($event)"
+          (dragleave)="dragLeave($event)" (drop)="drop($event, 'board', r, c)" 
+          (dragstart)="dragStart($event, 'board', r, c, letter)" [draggable]="letter!='*'">
+          <img [src]="url(letter)" [alt]="letter" class="tile-image">
         </div>
+      </div>
+    </ng-container>
     </div> 
 
-    <div *ngIf="!gameOver" class="shelf" id="shelf-0-0" (drop)="drop($event)" (dragenter)="dragEnter($event)"
+    <div *ngIf="!gameOver" class="shelf" (drop)="drop($event, 'shelf')" (dragenter)="dragEnter($event)"
       (dragleave)="dragLeave($event)" (dragover)="dragOver($event)">
       <ng-container *ngFor="let e of letters; let i=index">
-        <!-- <ng-container *ngFor="let col of row; let c=index"> -->
         <div class="tile">
-          <div id="tiles-{{i}}-0" (dragstart)="dragStart($event)" [draggable]="canDrag(e)">
+          <div (dragstart)="dragStart($event, 'shelf', i, -1, e)" [draggable]="true">
             <img [src]="url(e)" [alt]="e" class="tile-image">
           </div>
         </div>

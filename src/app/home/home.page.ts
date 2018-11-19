@@ -1,6 +1,7 @@
 import { Component, isDevMode } from '@angular/core';
 import { Puzzle } from '../puzzle';
 import { GameService } from '../game.service';
+import { Row } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -139,17 +140,20 @@ export class HomePage {
     ev.stopPropagation();
   }
 
-  dragStart(ev) {
+  dragStart(ev, source, row, col, letter) {
+    // dragStart($event, 'board', row, col, c)
     this.isDragging = true;
-    // console.log('Drag Start:', ev.target);
+
     // Set the drag's format and data. Use the event target's id for the data.
-    const values = ev.target.id.split('-');
-    const dropSource: { set: string, row: number, col: number } = { set: '', row: -1, col: -1 };
-    dropSource.set = values[0];
-    dropSource.row = values[1];
-    dropSource.col = values[2];
+    const dropSource = {
+      set: source,
+      row: row,
+      col: col,
+      letter: letter
+    };
+
     ev.dataTransfer.setData('text/json', JSON.stringify(dropSource));
-    ev.dataTransfer.effectAllowed = 'copyLink';
+    ev.dataTransfer.effectAllowed = 'move';
   }
 
   dragEnter(ev) {
@@ -178,18 +182,20 @@ export class HomePage {
     // console.log('End:', ev.dataTransfer.dropEffect);
   }
 
-  async drop(ev) {
+  async drop(ev, dest, row, col) {
+    // drop($event, 'board', row, col)
     ev.preventDefault();
     // console.log(ev);
+
     // Get the data, which is the id of the drop target
     const dropSource = JSON.parse(ev.dataTransfer.getData('text/json'));
-    // ev.target.appendChild(document.getElementById(data));
-    const dropDest: { set: string, row: number, col: number } = { set: '', row: -1, col: -1 };
-    [dropDest.set, dropDest.row, dropDest.col] = ev.currentTarget.id.split('-');
+    const dropDest = { set: dest, row: row, col: col };
     // console.log('Dropped: ', dropSource, dropDest);
 
     this.swapTiles(dropSource, dropDest);
 
+    this.dragEnd(ev);
+    
     if (!this.isMuted) {
       const soundFiles = 4;
       const whichSound = Math.floor(Math.random() * soundFiles) + 1;
@@ -208,18 +214,17 @@ export class HomePage {
 
   swapTiles(source, destination) {
     const swapFn = {
-      boardboard: (src, dest) => { // Dragging a tile from one game board cell to another.
-        const tmp = this.gameBoard[dest.row][dest.col];
-        this.gameBoard[dest.row][dest.col] = this.gameBoard[src.row][src.col];
-        this.gameBoard[src.row][src.col] = tmp;
+      boardboard: (src, dest) => {
+        // Dragging a tile from one game board cell to another.
+        this.gameBoard[src.row][src.col] = this.gameBoard[dest.row][dest.col];
+        this.gameBoard[dest.row][dest.col] = src.letter;
         this.totalMoves++;
       },
-      boardtiles: (src, dest) => {  // No-op
-        // const tmp = this.letters[dest.row][dest.col];
-        // this.letters[dest.row] = this.gameBoard[src.row][src.col];
-        // this.gameBoard[src.row][src.col] = tmp;
+      shelfshelf: (src, dest) => {
+        // No-op
       },
-      tilesboard: (src, dest) => { // Dragging a tile from the shelf to the game board.
+      shelfboard: (src, dest) => {
+        // Dragging a tile from the shelf to the game board.
         const tmp = this.gameBoard[dest.row][dest.col];
         this.gameBoard[dest.row][dest.col] = this.letters[src.row];
         if (this.isLetter(tmp)) {
@@ -231,19 +236,10 @@ export class HomePage {
         }
         this.totalMoves++;
       },
-      tilestiles: (src, dest) => {  // No-op
-        // const tmp = this.letters[dest.row][dest.col];
-        // this.letters[dest.row] = this.letters[src.row];
-        // this.letters[src.row] = tmp;
-      },
       boardshelf: (src, dest) => { // Dragging a tile from the game board to the shelf.
         this.letters.push(this.gameBoard[src.row][src.col]);
         this.gameBoard[src.row][src.col] = '*';
         this.totalMoves++;
-      },
-      tilesshelf: (src, dest) => { // No-op
-        // this.letters.push(this.gameBoard[src.row][src.col]);
-        // this.gameBoard[src.row][src.col] = '*';
       }
     };
 
