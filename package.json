@@ -34,7 +34,8 @@
     "core-js": "^2.5.3",
     "mobile-drag-drop": "^2.3.0-rc.1",
     "rxjs": "6.2.2",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.8.26",
+    "cordova-android": "~7.0.0"
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.8.5",
@@ -75,7 +76,8 @@
       "cordova-plugin-ionic-keyboard": {}
     },
     "platforms": [
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }
