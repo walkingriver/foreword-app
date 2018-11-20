@@ -1,20 +1,19 @@
-import { Component, isDevMode } from '@angular/core';
+import { Component, isDevMode, OnInit } from '@angular/core';
 import { Puzzle } from '../puzzle';
 import { GameService } from '../game.service';
-import { Row } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit {
   puzzle: Puzzle =
     {
       level: 0,
       size: 4,
-      // solution: ['MADEAREADEAREARN']
-      solution: ['FOURWORDACESMAST']
+      solution: ['MADEAREADEAREARN']
+      // solution: ['FOURWORDACESMAST']
     };
 
   letters = []; // this.puzzle.solution.split('').sort();
@@ -33,12 +32,29 @@ export class HomePage {
   isDragging = false;
   gameOver: boolean;
   isRecycling: boolean;
+  dropSounds: HTMLAudioElement[] = [];
+  shuffleSound: HTMLAudioElement;
+  soundFiles = 4;
 
   constructor(private games: GameService) {
-    // Todo: Find out what level the player is on.
-    // Then use that level instead of 0.
-    this.loadLevel(0);
-    // this.newGame();
+  }
+
+  async ngOnInit() {
+    this.loadSounds();
+    const progress = await this.games.getHighestLevel();
+    let nextLevel = 0;
+    if (progress[4]) {
+      nextLevel = progress[4] + 1;
+    }
+    this.loadLevel(nextLevel);
+  }
+
+  async loadSounds(): Promise<void> {
+    this.dropSounds['boardboard'] = new Audio('./assets/sounds/boardboard.wav');
+    this.dropSounds['boardshelf'] = new Audio('./assets/sounds/boardshelf.wav');
+    this.dropSounds['shelfboard'] = new Audio('./assets/sounds/shelfboard.wav');
+    this.dropSounds['shelfshelf'] = new Audio('./assets/sounds/shelfshelf.wav');
+    this.shuffleSound = new Audio('./src/assets/sounds/shuffle.wav');
   }
 
   private loadLevel(level: number) {
@@ -49,8 +65,7 @@ export class HomePage {
   async newGame() {
     if (!this.isMuted) {
       try {
-        const audio = new Audio('./src/assets/sounds/shuffle.wav');
-        await audio.play();
+        await this.shuffleSound.play();
       } catch (error) {
         // We can ignore this error.
       }
@@ -83,7 +98,7 @@ export class HomePage {
     this.loadLevel(this.puzzle.level - 1);
   }
 
-  winLevel() {
+  async winLevel() {
     this.isRecycling = true;
     this.gameOver = false;
     setTimeout(() => {
@@ -192,19 +207,13 @@ export class HomePage {
     const dropDest = { set: dest, row: row, col: col };
     // console.log('Dropped: ', dropSource, dropDest);
 
-    this.swapTiles(dropSource, dropDest);
+    await this.swapTiles(dropSource, dropDest);
 
     this.dragEnd(ev);
-    
-    if (!this.isMuted) {
-      const soundFiles = 4;
-      const whichSound = Math.floor(Math.random() * soundFiles) + 1;
-      const sound = new Audio(`./assets/sounds/drop${whichSound}.wav`);
-      await sound.play();
-    }
 
     if (this.testGame()) {
       this.gameOver = true;
+      await this.games.saveProgress(this.puzzle, this.totalMoves);
     }
   }
 
@@ -212,7 +221,7 @@ export class HomePage {
     return (/[A-Za-z]/.test(val));
   }
 
-  swapTiles(source, destination) {
+  async swapTiles(source, destination) {
     const swapFn = {
       boardboard: (src, dest) => {
         // Dragging a tile from one game board cell to another.
@@ -245,6 +254,15 @@ export class HomePage {
 
     const funcKey = source.set + destination.set;
     swapFn[funcKey](source, destination);
+
+    if (!this.isMuted) {
+      try {
+
+        await this.dropSounds[funcKey].play();
+      } catch (e) {
+        // It's OK to ignore a sound play error
+      }
+    }
   }
 }
 

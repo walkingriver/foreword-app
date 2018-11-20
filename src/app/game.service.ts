@@ -1,3 +1,4 @@
+import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 import { Puzzle } from './puzzle';
 import { games4 } from './games-4';
@@ -8,7 +9,7 @@ import { games3 } from './games-3';
 })
 export class GameService {
 
-  constructor() { }
+  constructor(private storage: Storage) { }
 
   getByLevel(size: number, level: number): Puzzle {
     const puzzles = {
@@ -24,6 +25,18 @@ export class GameService {
 
   getPuzzleCount(): number {
     return games4.length;
+  }
+
+  async saveProgress(puzzle: Puzzle, score: number) {
+    const size = puzzle.size / puzzle.solution.length;
+    const progress: Map<number, number> = (await this.getHighestLevel()) || { size: 0 };
+    // await this.storage.set('foreword-' + puzzle.solution[0].split('').sort(), score);
+    progress[size] = Math.max(progress[size] || 0, puzzle.level);
+    return this.storage.set('foreword-highest-level', progress);
+  }
+
+  getHighestLevel(): Promise<any> {
+    return this.storage.get('foreword-highest-level');
   }
 
   // private allPuzzles(): Puzzle[] {
