@@ -1,20 +1,20 @@
-.boom,.board-tile {
-  transition: 0.5s;
-}
+// .boom,.board-tile {
+//   transition: 0.5s;
+// }
 
-@mixin transform($rot, $x, $y) {
-  transform: scale(5) rotate($rot) translate($x, $y);
-  -moz-transform: scale(5) rotate($rot) translate($x, $y);
-  -webkit-transform: scale(5) rotate($rot) translate($x, $y);
-  -o-transform: scale(5) rotate($rot) translate($x, $y);
-}
+// @mixin transform($rot, $x, $y) {
+//   transform: scale(5) rotate($rot) translate($x, $y);
+//   -moz-transform: scale(5) rotate($rot) translate($x, $y);
+//   -webkit-transform: scale(5) rotate($rot) translate($x, $y);
+//   -o-transform: scale(5) rotate($rot) translate($x, $y);
+// }
 
-.boom {
-  transform: scale(0.05) rotate(1440deg);
-  -moz-transform: scale(0.05) rotate(1440deg);
-  -webkit-transform: scale(0.05) rotate(1440deg);
-  -o-transform: scale(0.05) rotate(1440deg);
-}
+// .boom {
+//   transform: scale(0.05) rotate(1440deg);
+//   -moz-transform: scale(0.05) rotate(1440deg);
+//   -webkit-transform: scale(0.05) rotate(1440deg);
+//   -o-transform: scale(0.05) rotate(1440deg);
+// }
 
 // .boom#board-0-0 { @include transform(-30deg, -100px, -100px); }
 // .boom#board-0-1 { @include transform(-15deg, -50px, -100px); }
