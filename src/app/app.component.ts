@@ -43,8 +43,7 @@ export class AppComponent {
         const isPolyfill = polyfill({
           // use this to make use of the scroll behaviour
           dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride,
-          iterationInterval: 2,
-          // forceApply: true
+          holdToDrag: 300
         });
         console.log('IsPolyFill: ', isPolyfill);
         if (supportsPassive) {
