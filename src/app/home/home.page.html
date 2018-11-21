@@ -1,21 +1,9 @@
 <ion-content>
-  <div class="game-wrapper" [class.isDragging]="isDragging">
+  <div class="game-wrapper size-{{gameSize}}" [class.isDragging]="isDragging">
     <h3 class="title">
       {{puzzle.size}} Words
       • Moves: {{totalMoves}}
     </h3>
-    <!-- <ion-grid class="game-board" padding (dragover)="dragOver($event)" (dragend)="dragEnd($event)">
-      <ion-row *ngFor="let row of gameBoard; let r=index">
-        <ion-col class="board" *ngFor="let col of row; let c=index">
-          <div class="board-tile" [class.boom]="isRecycling" id="board-{{r}}-{{c}}" (dragenter)="dragEnter($event)"
-            (dragleave)="dragLeave($event)" (drop)="drop($event)" 
-            (dragstart)="dragStart($event)" [draggable]="canDrag(col)">
-            <img [src]="url(col)" [alt]="col" class="tile-image">
-          </div>
-        </ion-col>
-      </ion-row>
-    </ion-grid> -->
-
     
     <div class="flex-container game-board" padding (dragover)="dragOver($event)" (dragend)="dragEnd($event)">
       <ng-container *ngFor="let row of gameBoard; let r=index">

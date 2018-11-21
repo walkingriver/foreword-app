@@ -1,6 +1,7 @@
 import { Component, isDevMode, OnInit } from '@angular/core';
 import { Puzzle } from '../puzzle';
 import { GameService } from '../game.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -35,16 +36,18 @@ export class HomePage implements OnInit {
   dropSounds: HTMLAudioElement[] = [];
   shuffleSound: HTMLAudioElement;
   soundFiles = 4;
+  order: number;
 
-  constructor(private games: GameService) {
+  constructor(private games: GameService,  route: ActivatedRoute) {
+    this.gameSize = route.snapshot.params['order'];
   }
 
   async ngOnInit() {
     this.loadSounds();
     const progress = await this.games.getHighestLevel();
     let nextLevel = 0;
-    if (progress[4]) {
-      nextLevel = progress[4] + 1;
+    if (progress[this.gameSize]) {
+      nextLevel = progress[this.gameSize] + 1;
     }
     this.loadLevel(nextLevel);
   }
