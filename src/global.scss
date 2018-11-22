@@ -18,13 +18,15 @@ h6 {
   color: #C1A172;
 }
 
+.panel ul,
+.panel li,
 p {
   color: #C1A172;
 }
 
 ::-webkit-scrollbar,
 *::-webkit-scrollbar {
-  display: none ;
+  display: none;
 }
 
 .game-wrapper,
@@ -80,8 +82,7 @@ ion-content {
 }
 
 .tile-image {
-  width: 100%;
-  // height: 90%;
+  width: 100%; // height: 90%;
 }
 
 .shelf {
