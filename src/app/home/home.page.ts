@@ -48,7 +48,7 @@ export class HomePage implements OnInit {
 
   async ngOnInit() {
     this.loadSounds();
-    const progress = await this.games.getHighestLevel();
+    const progress = (await this.games.getHighestLevel()) || { 3: 0, 4: 0, 5: 0 };
     let nextLevel = 0;
     if (progress[this.gameSize]) {
       nextLevel = progress[this.gameSize] + 1;
