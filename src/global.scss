@@ -27,15 +27,24 @@ p {
   display: none ;
 }
 
+.game-wrapper,
+.panel {
+  background-image: url(assets/images/brown-bg.jpg);
+  background-repeat: repeat-y;
+  background-size: cover;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.panel {
+  padding-top: 15px;
+  padding-bottom: 20px;
+}
+
 .game-wrapper {
   position: fixed;
   width: 100%;
   height: 110vh;
-  padding-left: 10px;
-  padding-right: 10px;
-  background-image: url(assets/images/brown-bg.jpg);
-  background-repeat: repeat-y;
-  background-size: cover;
 }
 
 ion-content {
