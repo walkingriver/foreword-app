@@ -1,20 +1,20 @@
-.boom,.board-tile {
-  transition: 0.5s;
-}
+// .boom,.board-tile {
+//   transition: 0.5s;
+// }
 
-@mixin transform($rot, $x, $y) {
-  transform: scale(5) rotate($rot) translate($x, $y);
-  -moz-transform: scale(5) rotate($rot) translate($x, $y);
-  -webkit-transform: scale(5) rotate($rot) translate($x, $y);
-  -o-transform: scale(5) rotate($rot) translate($x, $y);
-}
+// @mixin transform($rot, $x, $y) {
+//   transform: scale(5) rotate($rot) translate($x, $y);
+//   -moz-transform: scale(5) rotate($rot) translate($x, $y);
+//   -webkit-transform: scale(5) rotate($rot) translate($x, $y);
+//   -o-transform: scale(5) rotate($rot) translate($x, $y);
+// }
 
-.boom {
-  transform: scale(0.05) rotate(1440deg);
-  -moz-transform: scale(0.05) rotate(1440deg);
-  -webkit-transform: scale(0.05) rotate(1440deg);
-  -o-transform: scale(0.05) rotate(1440deg);
-}
+// .boom {
+//   transform: scale(0.05) rotate(1440deg);
+//   -moz-transform: scale(0.05) rotate(1440deg);
+//   -webkit-transform: scale(0.05) rotate(1440deg);
+//   -o-transform: scale(0.05) rotate(1440deg);
+// }
 
 // .boom#board-0-0 { @include transform(-30deg, -100px, -100px); }
 // .boom#board-0-1 { @include transform(-15deg, -50px, -100px); }
@@ -41,3 +41,43 @@
 // .boom#board-4-2 { @include transform(0deg, 0px, -100px); }
 // .boom#board-4-3 { @include transform(15deg, 50px, -100px); }
 // .boom#board-4-4 { @include transform(30deg, 100px, -100px); }
+
+.flex-container {
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap; 
+}
+
+.flex-cell {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.size-3 .flex-cell {
+  flex: 0 0 33.33%;
+}
+
+.size-4 .flex-cell {
+  flex: 0 0 25%;
+}
+
+.size-5 .flex-cell {
+  flex: 0 0 20%;
+}
+
+.flex-cell:before {
+  content: '';
+  display: table;
+  padding-top: 100%;
+}
+
+.flex-item {
+  flex-grow: 1;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

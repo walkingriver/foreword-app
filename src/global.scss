@@ -18,20 +18,36 @@ h6 {
   color: #C1A172;
 }
 
+.panel ul,
+.panel li,
+p {
+  color: #C1A172;
+}
+
 ::-webkit-scrollbar,
 *::-webkit-scrollbar {
-  display: none ;
+  display: none;
+}
+
+.game-wrapper,
+.panel {
+  background-image: url(assets/images/brown-bg.jpg);
+  background-repeat: repeat-y;
+  background-size: cover;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.panel {
+  padding-top: 15px;
+  padding-bottom: 20px;
+  min-height: 90vh;
 }
 
 .game-wrapper {
   position: fixed;
   width: 100%;
   height: 110vh;
-  padding-left: 10px;
-  padding-right: 10px;
-  background-image: url(assets/images/brown-bg.jpg);
-  background-repeat: repeat-y;
-  background-size: cover;
 }
 
 ion-content {
@@ -66,8 +82,7 @@ ion-content {
 }
 
 .tile-image {
-  width: 100%;
-  // height: 90%;
+  width: 100%; // height: 90%;
 }
 
 .shelf {
