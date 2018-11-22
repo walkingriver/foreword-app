@@ -1,7 +1,8 @@
 import { Component, isDevMode, OnInit } from '@angular/core';
 import { Puzzle } from '../puzzle';
 import { GameService } from '../game.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -38,7 +39,10 @@ export class HomePage implements OnInit {
   soundFiles = 4;
   order: number;
 
-  constructor(private games: GameService,  route: ActivatedRoute) {
+  constructor(private alertController: AlertController,
+    private games: GameService,
+    private router: Router,
+    route: ActivatedRoute) {
     this.gameSize = route.snapshot.params['order'];
   }
 
@@ -57,7 +61,7 @@ export class HomePage implements OnInit {
     this.dropSounds['boardshelf'] = new Audio('./assets/sounds/boardshelf.wav');
     this.dropSounds['shelfboard'] = new Audio('./assets/sounds/shelfboard.wav');
     this.dropSounds['shelfshelf'] = new Audio('./assets/sounds/shelfshelf.wav');
-    this.shuffleSound = new Audio('./src/assets/sounds/shuffle.wav');
+    this.shuffleSound = new Audio('./assets/sounds/shuffle.wav');
   }
 
   private loadLevel(level: number) {
@@ -93,12 +97,57 @@ export class HomePage implements OnInit {
     this.letters = this.puzzle.solution[0].split('').sort();
   }
 
+  resetGame() {
+    if (this.totalMoves) {
+      this.presentAlertConfirm(() => this.newGame());
+    } else {
+      this.newGame();
+    }
+  }
+
   nextLevel() {
     this.loadLevel(this.puzzle.level + 1);
   }
 
   prevLevel() {
     this.loadLevel(this.puzzle.level - 1);
+  }
+
+  startPage() {
+    if (this.totalMoves) {
+      this.presentAlertConfirm(() => this.goToStart());
+    } else {
+      this.goToStart();
+    }
+  }
+
+  goToStart() {
+    this.router.navigateByUrl('/Start');
+  }
+
+  async presentAlertConfirm(successFn) {
+    const alert = await this.alertController.create({
+      header: 'Are you sure?',
+      message: 'This will reset your game in progress.',
+      cssClass: 'panel',
+      buttons: [
+        {
+          text: 'Nevermind',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'OK',
+          handler: () => {
+            successFn();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async winLevel() {
