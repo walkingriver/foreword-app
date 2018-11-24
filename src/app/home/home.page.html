@@ -8,6 +8,7 @@
     <ion-buttons slot="primary">
       <ion-button [disabled]="!hints" (click)="useHint()">
         <ion-badge color="tertiary">{{hints}}</ion-badge>
+        <ion-ripple-effect></ion-ripple-effect>
         <ion-icon name="bulb">
         </ion-icon>
       </ion-button>

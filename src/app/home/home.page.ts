@@ -2,8 +2,9 @@ import { Component, isDevMode, OnInit } from '@angular/core';
 import { Puzzle } from '../puzzle';
 import { GameService } from '../game.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController, Platform } from '@ionic/angular';
+import { AlertController, Platform, ToastController } from '@ionic/angular';
 import { AdMobFreeInterstitialConfig, AdMobFree } from '@ionic-native/admob-free/ngx';
+import { SSL_OP_NO_TLSv1_1 } from 'constants';
 
 @Component({
   selector: 'app-home',
@@ -41,6 +42,7 @@ export class HomePage implements OnInit {
   order: number;
   isiOS: boolean;
   hints: number;
+  interval: any;
 
   constructor(
     private admob: AdMobFree,
@@ -48,6 +50,7 @@ export class HomePage implements OnInit {
     private games: GameService,
     private platform: Platform,
     private router: Router,
+    private toastController: ToastController,
     route: ActivatedRoute) {
     this.gameSize = route.snapshot.params['order'];
   }
@@ -64,6 +67,26 @@ export class HomePage implements OnInit {
     this.hints = await this.games.getRemainingHints();
     this.loadLevel(nextLevel);
     // this.newGame();
+  }
+
+  setupHintTimer() {
+    this.interval = window.setInterval(() => { this.suggestHint(); }, 30000);
+  }
+
+  clearHintTimer() {
+    window.clearInterval(this.interval);
+  }
+
+  async suggestHint() {
+    const toast = await this.toastController.create({
+      message: 'Need a hint? Click the lightbulb in the title bar.',
+      showCloseButton: false,
+      position: 'bottom',
+      duration: 2500,
+      translucent: true,
+      closeButtonText: 'No'
+    });
+    toast.present();
   }
 
   async useHint() {
@@ -116,6 +139,8 @@ export class HomePage implements OnInit {
     if (this.puzzle.level % 3 === 0) {
       this.launchInterstitial();
     }
+
+    this.setupHintTimer();
   }
 
   launchInterstitial() {
@@ -247,6 +272,7 @@ export class HomePage implements OnInit {
   dragStart(ev, source, row, col, letter) {
     // dragStart($event, 'board', row, col, c)
     this.isDragging = true;
+    this.clearHintTimer();
 
     // Set the drag's format and data. Use the event target's id for the data.
     const dropSource = {
@@ -283,6 +309,7 @@ export class HomePage implements OnInit {
     this.isDragging = false;
     const elements = document.getElementsByClassName('hover');
     Array.from(elements).forEach((e) => e.classList.remove('hover'));
+    this.setupHintTimer();
     // console.log('End:', ev.dataTransfer.dropEffect);
   }
 
@@ -303,6 +330,9 @@ export class HomePage implements OnInit {
     if (this.testGame()) {
       this.gameOver = true;
       await this.games.saveProgress(this.puzzle, this.totalMoves);
+      this.clearHintTimer();
+    } else {
+      this.setupHintTimer();
     }
   }
 
