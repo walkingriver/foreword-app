@@ -8,7 +8,6 @@ import { games3 } from './games-3';
   providedIn: 'root'
 })
 export class GameService {
-
   constructor(private storage: Storage) { }
 
   getByLevel(size: number, level: number): Puzzle {
@@ -37,6 +36,23 @@ export class GameService {
 
   getHighestLevel(): Promise<any> {
     return this.storage.get('foreword-highest-level');
+  }
+
+  async getRemainingHints(): Promise<number> {
+    let hints = await this.storage.get('hints');
+    if (hints === null) {
+      // One time gift of hints
+      hints = 100;
+      await this.storage.set('hints', hints);
+    }
+    return hints;
+  }
+
+  async decrementHints(): Promise<number> {
+    let hints = await this.getRemainingHints();
+    hints--;
+    await this.storage.set('hints', hints);
+    return hints;
   }
 
   // private allPuzzles(): Puzzle[] {

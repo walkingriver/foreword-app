@@ -6,8 +6,10 @@
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="primary">
-      <ion-button>
-        Moves: {{totalMoves}}
+      <ion-button [disabled]="!hints" (click)="useHint()">
+        <ion-badge color="tertiary">{{hints}}</ion-badge>
+        <ion-icon name="bulb">
+        </ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>{{puzzle.size}} Words</ion-title>

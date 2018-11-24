@@ -40,6 +40,7 @@ export class HomePage implements OnInit {
   soundFiles = 4;
   order: number;
   isiOS: boolean;
+  hints: number;
 
   constructor(
     private admob: AdMobFree,
@@ -60,8 +61,16 @@ export class HomePage implements OnInit {
     if (progress[this.gameSize]) {
       nextLevel = progress[this.gameSize] + 1;
     }
+    this.hints = await this.games.getRemainingHints();
     this.loadLevel(nextLevel);
     // this.newGame();
+  }
+
+  async useHint() {
+    // Figure out how to use a hint here.
+
+    // Then decrement the hints
+    this.hints = await this.games.decrementHints();
   }
 
   async loadSounds(): Promise<void> {
