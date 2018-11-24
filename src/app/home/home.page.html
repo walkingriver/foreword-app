@@ -66,15 +66,12 @@
       <ion-fab-button (click)="startPage()">
         <ion-icon color="dark" name="home"></ion-icon>
       </ion-fab-button>
+      <ion-fab-button *ngIf="isMuted" (click)="isMuted = false">
+        <ion-icon color="dark" name="volume-off"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="!isMuted" (click)="isMuted = true">
+        <ion-icon color="dark" name="volume-high"></ion-icon>
+      </ion-fab-button>
     </ion-fab-list>
-  </ion-fab>
-
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-    <ion-fab-button *ngIf="isMuted" (click)="isMuted = false">
-      <ion-icon color="dark" name="volume-off"></ion-icon>
-    </ion-fab-button>
-    <ion-fab-button *ngIf="!isMuted" (click)="isMuted = true">
-      <ion-icon color="dark" name="volume-high"></ion-icon>
-    </ion-fab-button>
   </ion-fab>
 </ion-content>

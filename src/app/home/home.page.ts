@@ -2,7 +2,8 @@ import { Component, isDevMode, OnInit } from '@angular/core';
 import { Puzzle } from '../puzzle';
 import { GameService } from '../game.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, Platform } from '@ionic/angular';
+import { AdMobFreeInterstitialConfig, AdMobFree } from '@ionic-native/admob-free/ngx';
 
 @Component({
   selector: 'app-home',
@@ -38,15 +39,21 @@ export class HomePage implements OnInit {
   shuffleSound: HTMLAudioElement;
   soundFiles = 4;
   order: number;
+  isiOS: boolean;
 
-  constructor(private alertController: AlertController,
+  constructor(
+    private admob: AdMobFree,
+    private alertController: AlertController,
     private games: GameService,
+    private platform: Platform,
     private router: Router,
     route: ActivatedRoute) {
     this.gameSize = route.snapshot.params['order'];
   }
 
   async ngOnInit() {
+    await this.platform.ready();
+    this.isiOS = this.platform.is('ios');
     this.loadSounds();
     const progress = (await this.games.getHighestLevel()) || { 3: 0, 4: 0, 5: 0 };
     let nextLevel = 0;
@@ -54,6 +61,7 @@ export class HomePage implements OnInit {
       nextLevel = progress[this.gameSize] + 1;
     }
     this.loadLevel(nextLevel);
+    // this.newGame();
   }
 
   async loadSounds(): Promise<void> {
@@ -95,6 +103,26 @@ export class HomePage implements OnInit {
     }
 
     this.letters = this.puzzle.solution[0].split('').sort();
+
+    if (this.puzzle.level % 3 === 0) {
+      this.launchInterstitial();
+    }
+  }
+
+  launchInterstitial() {
+    const interstitialConfig: AdMobFreeInterstitialConfig = {
+      isTesting: this.isDebugging,
+      autoShow: true,
+      id: this.isiOS
+        ? 'ca-app-pub-5422413832537104/6868524515'
+        : 'ca-app-pub-5422413832537104/2046732230'
+    };
+
+    this.admob.interstitial.config(interstitialConfig);
+
+    this.admob.interstitial.prepare().then(() => {
+      // success
+    });
   }
 
   resetGame() {
