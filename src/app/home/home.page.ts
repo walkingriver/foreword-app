@@ -61,6 +61,7 @@ export class HomePage implements OnInit {
       nextLevel = progress[this.gameSize] + 1;
     }
     this.loadLevel(nextLevel);
+    // this.newGame();
   }
 
   async loadSounds(): Promise<void> {

@@ -4,7 +4,7 @@
     <description>An awesome word puzzle app written in Ionic.</description>
     <author email="michael@walkingriver.com" href="http://walkingriver.com/">Ionic Framework Team</author>
     <content src="index.html" />
-    <access origin="*" />
+    <allow-navigation href="file://*/*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -82,6 +82,9 @@
     <plugin name="cordova-plugin-splashscreen" spec="5.0.2" />
     <plugin name="cordova-plugin-ionic-webview" spec="^2.0.0" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
-    <engine name="android" spec="7.0.0" />
+    <plugin name="cordova-plugin-admob-free" spec="^0.23.0">
+        <variable name="ADMOB_APP_ID" value="ca-app-pub-5422413832537104~7480814328" />
+    </plugin>
     <engine name="ios" spec="4.5.5" />
+    <engine name="android" spec="7.0.0" />
 </widget>
