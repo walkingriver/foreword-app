@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="primary">
-      <ion-button [disabled]="!hints" (click)="useHint()">
+      <ion-button [disabled]="!canHint()" (click)="useHint()">
         <ion-badge color="tertiary">{{hints}}</ion-badge>
         <ion-ripple-effect></ion-ripple-effect>
         <ion-icon name="bulb">
@@ -19,9 +19,7 @@
 
 <ion-content>
   <div class="game-wrapper size-{{gameSize}}" [class.isDragging]="isDragging">
-    <h3 class="title">
-
-    </h3>
+    <br />
 
     <div class="flex-container game-board" padding (dragover)="dragOver($event)" (dragend)="dragEnd($event)">
       <ng-container *ngFor="let row of gameBoard; let r=index">

@@ -42,7 +42,8 @@ export class HomePage implements OnInit {
   order: number;
   isiOS: boolean;
   hints: number;
-  interval: any;
+  interval: number;
+  hintOrder: number[];
 
   constructor(
     private admob: AdMobFree,
@@ -70,11 +71,15 @@ export class HomePage implements OnInit {
   }
 
   setupHintTimer() {
-    this.interval = window.setInterval(() => { this.suggestHint(); }, 30000);
+    // this.interval = window.setInterval(() => { this.suggestHint(); }, 30000);
   }
 
   clearHintTimer() {
-    window.clearInterval(this.interval);
+    // window.clearInterval(this.interval);
+  }
+
+  canHint() {
+    return this.hintOrder && this.hintOrder.length && this.hints && !this.gameOver;
   }
 
   async suggestHint() {
@@ -91,8 +96,34 @@ export class HomePage implements OnInit {
 
   async useHint() {
     // Figure out how to use a hint here.
+    // First, get the first element from the hint order.
+    const position = this.hintOrder.shift();
 
-    // Then decrement the hints
+    // We'll always work from the first solution, since we have no way
+    // really to know which one the player is close to solving (or if
+    // there is even more than one at this point).
+    const letter = this.puzzle.solution[0][position];
+
+    // Now convert the position to the grid col,row;
+    const row = Math.floor(position / this.gameSize);
+    const col = position % this.gameSize;
+
+    // At this point, we have the following possibilities
+    // 1. The tile at that position is already correct.
+
+    // 2. There is no tile at that point.
+
+    // 2a. The one we need is on the shelf.
+
+    // 2b. The one we need is on the board.
+
+    // 3. There is an incorrect tile at that point.
+
+    // 3a. The one we need is on the shelf.
+
+    // 3b. The one we need is on the board.
+
+    // Then decrement the hints.
     this.hints = await this.games.decrementHints();
   }
 
@@ -141,6 +172,29 @@ export class HomePage implements OnInit {
     }
 
     this.setupHintTimer();
+    this.prepareHints();
+  }
+
+  /**
+   * Shuffles the solution positions so that we can offer "random"
+   * hints without duplication.
+   */
+  prepareHints() {
+    const total = this.puzzle.solution[0].length;
+    const hintOrder = Array.from(Array(total).keys());
+    this.hintOrder = this.shuffle(hintOrder);
+  }
+
+  /**
+   * Shuffles array in place. ES6 version
+   * @param {Array} a items An array containing the items.
+   */
+  shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
   }
 
   launchInterstitial() {
