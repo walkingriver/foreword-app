@@ -9,7 +9,17 @@
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "version": "cordova-version-sync",
+    "prepare": "cp $HOME/.ssh/wr.keystore platforms/android && cp $HOME/.ssh/*.properties platforms/android",
+    "release:android": "ionic cordova build android --release",
+    "release:ios": "ionic cordova build ios --release",
+    "release:both": "run-s release:android release:ios",
+    "release": "run-s prepare version:patch release:both",
+    "version:patch": "npm --no-git-tag-version version patch",
+    "version:minor": "npm --no-git-tag-version version minor",
+    "open:ios": "open platforms/ios/*.xcworkspace/",
+    "open:android": "open platforms/android/build/outputs/apk/release/"
   },
   "private": true,
   "dependencies": {

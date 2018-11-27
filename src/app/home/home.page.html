@@ -23,10 +23,21 @@
 
     <div class="flex-container game-board" padding (dragover)="dragOver($event)" (dragend)="dragEnd($event)">
       <ng-container *ngFor="let row of gameBoard; let r=index">
-        <div class="flex-cell board" *ngFor="let letter of row; let c=index">
-          <div class="flex-item board-tile" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)" (drop)="drop($event, 'board', r, c)"
-            (dragstart)="dragStart($event, 'board', r, c, letter)" [draggable]="letter!='*'">
-            <img [src]="url(letter)" [alt]="letter" class="tile-image">
+        <div class="flex-cell board" *ngFor="let gbs of row; let c=index">
+          <div *ngIf="isDragSource(gbs) && isDropTarget(gbs)" class="flex-item board-tile" (dragstart)="dragStart($event, 'board', r, c, gbs.letter)"
+            draggable="true" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)" (drop)="drop($event, 'board', r, c)">
+            <img [src]="url(gbs.letter)" [alt]="gbs.letter" class="tile-image">
+          </div>
+          <div *ngIf="isDragSource(gbs) && !isDropTarget(gbs)" class="flex-item board-tile" (dragstart)="dragStart($event, 'board', r, c, gbs.letter)"
+            draggable="true">
+            <img [src]="url(gbs.letter)" [alt]="gbs.letter" class="tile-image">
+          </div>
+          <div *ngIf="isDropTarget(gbs) && !isDragSource(gbs)" class="flex-item board-tile" (dragenter)="dragEnter($event)"
+            (dragleave)="dragLeave($event)" (drop)="drop($event, 'board', r, c)">
+            <img [src]="url(gbs.letter)" [alt]="gbs.letter" class="tile-image">
+          </div>
+          <div *ngIf="!isDragSource(gbs) && !isDropTarget(gbs)" class="flex-item board-tile is-locked" draggable="false">
+            <img [src]="url(gbs.letter)" [alt]="gbs.letter" class="tile-image">
           </div>
         </div>
       </ng-container>

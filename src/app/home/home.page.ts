@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, Platform, ToastController } from '@ionic/angular';
 import { AdMobFreeInterstitialConfig, AdMobFree } from '@ionic-native/admob-free/ngx';
 import { SSL_OP_NO_TLSv1_1 } from 'constants';
+import { GameBoardSquare } from '../game-board-square';
 
 @Component({
   selector: 'app-home',
@@ -20,17 +21,17 @@ export class HomePage implements OnInit {
       // solution: ['FOURWORDACESMAST']
     };
 
-  letters = []; // this.puzzle.solution.split('').sort();
+  letters: string[] = []; // this.puzzle.solution.split('').sort();
   totalMoves = 0;
   isDebugging: boolean = isDevMode();
   isMuted: boolean;
   gameSize = 4;
 
-  gameBoard = [
-    ['*', '*', '*', '*'],
-    ['*', '*', '*', '*'],
-    ['*', '*', '*', '*'],
-    ['*', '*', '*', '*'],
+  gameBoard: GameBoardSquare[][] = [
+    [{ letter: '*' }, { letter: '*' }, { letter: '*' }, { letter: '*' }],
+    [{ letter: '*' }, { letter: '*' }, { letter: '*' }, { letter: '*' }],
+    [{ letter: '*' }, { letter: '*' }, { letter: '*' }, { letter: '*' }],
+    [{ letter: '*' }, { letter: '*' }, { letter: '*' }, { letter: '*' }],
   ];
 
   isDragging = false;
@@ -110,6 +111,9 @@ export class HomePage implements OnInit {
 
     // At this point, we have the following possibilities
     // 1. The tile at that position is already correct.
+    if (this.gameBoard[row][col].letter === letter) {
+      this.gameBoard[row][col].isLocked = true;
+    }
 
     // 2. There is no tile at that point.
 
@@ -160,7 +164,7 @@ export class HomePage implements OnInit {
     for (let i = 0; i < square; i++) {
       const row = [];
       for (let j = 0; j < square; j++) {
-        row.push('*');
+        row.push({ letter: '*', isLocked: false });
       }
       this.gameBoard.push(row);
     }
@@ -271,16 +275,16 @@ export class HomePage implements OnInit {
     this.gameOver = false;
     setTimeout(() => {
       this.gameBoard = this.puzzleToGameBoard(this.puzzle);
-      this.gameBoard[0][0] = '*';
+      this.gameBoard[0][0] = { letter: '*' };
       this.letters = [];
       this.letters.push(this.puzzle.solution[0][0]);
       this.isRecycling = false;
     }, 1000);
   }
 
-  puzzleToGameBoard(puzzle): string[][] {
+  puzzleToGameBoard(puzzle): GameBoardSquare[][] {
     const size = Math.sqrt(puzzle.solution[0].length);
-    const board: string[][] = [];
+    const board: GameBoardSquare[][] = [];
     const letters: string[] = puzzle.solution[0].split('');
 
     letters.forEach((v, i) => {
@@ -289,7 +293,7 @@ export class HomePage implements OnInit {
       if (col === 0) {
         board[row] = [];
       }
-      board[row][col] = v;
+      board[row][col] = { letter: v };
     });
 
     return board;
@@ -302,7 +306,9 @@ export class HomePage implements OnInit {
   gameBoardToString() {
     let board = '';
     this.gameBoard.forEach((row) => {
-      board += row.join('');
+      row.forEach((col) => {
+        board += col.letter;
+      });
     });
 
     return board;
@@ -313,8 +319,12 @@ export class HomePage implements OnInit {
     return `./assets/images/${letter}.png`;
   }
 
-  canDrag(val) {
-    return !this.gameOver && (/[A-Za-z]/.test(val));
+  isDragSource(val: GameBoardSquare): boolean {
+    return !this.gameOver && !val.isLocked && (/[A-Za-z]/.test(val.letter));
+  }
+
+  isDropTarget(val: GameBoardSquare): boolean {
+    return !this.gameOver && !val.isLocked;
   }
 
   dragOver(ev) {
@@ -338,6 +348,15 @@ export class HomePage implements OnInit {
 
     ev.dataTransfer.setData('text/json', JSON.stringify(dropSource));
     ev.dataTransfer.effectAllowed = 'move';
+
+    // Remove the letter from the drag source
+    window.setTimeout( () => {
+      if (dropSource.set === 'board') {
+        this.gameBoard[dropSource.row][dropSource.col] = { letter: '*' };
+      } else {
+        this.letters.splice(row, 1);
+      }
+    }, 5);
   }
 
   dragEnter(ev) {
@@ -408,19 +427,19 @@ export class HomePage implements OnInit {
       shelfboard: (src, dest) => {
         // Dragging a tile from the shelf to the game board.
         const tmp = this.gameBoard[dest.row][dest.col];
-        this.gameBoard[dest.row][dest.col] = this.letters[src.row];
+        this.gameBoard[dest.row][dest.col] = { letter: this.letters[src.row] };
         if (this.isLetter(tmp)) {
           // Swap
-          this.letters[src.row] = tmp;
+          this.letters[src.row] = tmp.letter;
         } else {
           // Remove it
-          this.letters.splice(src.row, 1);
+          // this.letters.splice(src.row, 1);
         }
         this.totalMoves++;
       },
       boardshelf: (src, dest) => { // Dragging a tile from the game board to the shelf.
-        this.letters.push(this.gameBoard[src.row][src.col]);
-        this.gameBoard[src.row][src.col] = '*';
+        this.letters.push(this.gameBoard[src.row][src.col].letter);
+        // this.gameBoard[src.row][src.col] = { letter: '*' };
         this.totalMoves++;
       }
     };
