@@ -107,24 +107,69 @@ export class HomePage implements OnInit {
     // Now convert the position to the grid col,row;
     const row = Math.floor(position / this.gameSize);
     const col = position % this.gameSize;
+    const targetTile = this.gameBoard[row][col];
 
     // At this point, we have the following possibilities
-    // 1. The tile at that position is already correct.
-    if (this.gameBoard[row][col].letter === letter) {
-      this.gameBoard[row][col].isLocked = true;
+    if (this.isLetter(targetTile.letter)) {
+      // 1. There is a tile at that position.
+      // 1a. The tile at that position is already correct.
+      if (targetTile.letter === letter) {
+        targetTile.isLocked = true;
+      } else {
+        // 1b. There is an incorrect tile at that point.
+        // Move it to the shelf immediately.
+        this.letters.push({ letter: targetTile.letter });
+
+        // Now there are two more possibilities
+        // 1c. The one we need is on the shelf, which is what we want
+        const shelfIndex = this.letters.findIndex((val) => val.letter === letter);
+        if (shelfIndex >= 0) {
+          // Remove it from the shelf
+          this.letters.splice(shelfIndex, 1);
+
+          // Add it to the board and lock it.
+          targetTile.letter = letter;
+        } else {
+          // 1d. The one we need is on the board.
+          const boardTile =
+            ([] as GameBoardSquare[]).concat(...this.gameBoard).find(val => val.letter === letter);
+
+          // Put it where it belongs.
+          targetTile.isLocked = true;
+
+          // And empty the square it used to occupy
+          boardTile.letter = '*';
+        }
+
+        // And lock it
+        targetTile.isLocked = true;
+      }
+    } else {
+      // 2. There is no tile at that point.
+      // Now there are two more possibilities
+      // 2a. The one we need is on the shelf, which is what we want
+      const shelfIndex = this.letters.findIndex((val) => val.letter === letter);
+      if (shelfIndex >= 0) {
+        // Remove it from the shelf
+        this.letters.splice(shelfIndex, 1);
+
+        // Add it to the board.
+        targetTile.letter = letter;
+      } else {
+        // 2b. The one we need is on the board.
+        const boardTile =
+          ([] as GameBoardSquare[]).concat(...this.gameBoard).find(val => val.letter === letter);
+
+        // Put it where it belongs and lock it.
+        targetTile.isLocked = true;
+
+        // And empty the square it used to occupy
+        boardTile.letter = '*';
+      }
+
+      // And lock it
+      targetTile.isLocked = true;
     }
-
-    // 2. There is no tile at that point.
-
-    // 2a. The one we need is on the shelf.
-
-    // 2b. The one we need is on the board.
-
-    // 3. There is an incorrect tile at that point.
-
-    // 3a. The one we need is on the shelf.
-
-    // 3b. The one we need is on the board.
 
     // Then decrement the hints.
     this.hints = await this.games.decrementHints();
