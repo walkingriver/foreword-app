@@ -55,6 +55,12 @@ export class GameService {
     return hints;
   }
 
+  async addHints(hints: number) {
+    const currentHints = await this.getRemainingHints();
+    await this.storage.set('hints', hints + currentHints);
+    return hints;
+  }
+
   // private allPuzzles(): Puzzle[] {
   //   return [{ size: 4, 'solution': ['MADEAREADEAREARN'] },
   //   { 'size': 4, 'solution': ['RUSHUNTOSTEMHOME'] },

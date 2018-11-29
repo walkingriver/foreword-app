@@ -75,6 +75,12 @@
       <ion-fab-button (click)="winLevel()" *ngIf="isDebugging">
         <ion-icon color="dark" md="arrow-redo-sharp" ios="arrow-redo-outline"></ion-icon>
       </ion-fab-button>
+      <ion-fab-button (click)="shuffleLevel()" *ngIf="isDebugging">
+        <ion-icon color="dark" name="shuffle"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="addHints(25)" *ngIf="isDebugging">
+        <ion-icon color="dark" name="bulb"></ion-icon>
+      </ion-fab-button>
       <ion-fab-button (click)="startPage()">
         <ion-icon color="dark" md="home-sharp" ios="home-outline"></ion-icon>
       </ion-fab-button>

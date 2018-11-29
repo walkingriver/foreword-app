@@ -82,6 +82,10 @@ export class HomePage implements OnInit {
     return this.hintOrder && this.hintOrder.length && this.hints && !this.gameOver;
   }
 
+  addHints(hints: number) {
+    this.games.addHints(hints);
+  }
+
   async suggestHint() {
     const toast = await this.toastController.create({
       message: 'Need a hint? Click the lightbulb in the title bar.',
@@ -136,6 +140,7 @@ export class HomePage implements OnInit {
 
           // Put it where it belongs.
           targetTile.isLocked = true;
+          targetTile.letter = letter;
 
           // And empty the square it used to occupy
           boardTile.letter = '*';
@@ -173,6 +178,9 @@ export class HomePage implements OnInit {
 
     // Then decrement the hints.
     this.hints = await this.games.decrementHints();
+
+    // And finally, check to see if the game is won.
+    this.testGame();
   }
 
   async loadSounds(): Promise<void> {
@@ -239,7 +247,7 @@ export class HomePage implements OnInit {
 
   /**
    * Shuffles array in place. ES6 version
-   * @param {Array} a items An array containing the items.
+   * @param {Array} An array containing the items.
    */
   shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
@@ -318,23 +326,28 @@ export class HomePage implements OnInit {
     await alert.present();
   }
 
-  async winLevel() {
-    this.isRecycling = true;
+  winLevel() {
     this.gameOver = false;
-    setTimeout(() => {
-      this.gameBoard = this.puzzleToGameBoard(this.puzzle);
-      this.gameBoard[0][0] = { letter: '*' };
-      this.letters = [];
-      this.letters.push({ letter: this.puzzle.solution[0][0] });
-      this.isRecycling = false;
-    }, 1000);
+    this.gameBoard = this.puzzleToGameBoard(this.puzzle);
+    this.gameBoard[0][0] = { letter: '*' };
+    this.letters = [];
+    this.letters.push({ letter: this.puzzle.solution[0][0] });
+  }
+
+  shuffleLevel() {
+    this.gameOver = false;
+    this.gameBoard = this.stringToGameBoard(this.puzzle.solution[0].split('').sort());
+    this.letters = [];
   }
 
   puzzleToGameBoard(puzzle): GameBoardSquare[][] {
-    const size = Math.sqrt(puzzle.solution[0].length);
-    const board: GameBoardSquare[][] = [];
     const letters: string[] = puzzle.solution[0].split('');
+    return this.stringToGameBoard(letters);
+  }
 
+  stringToGameBoard(letters) {
+    const size = Math.sqrt(letters.length);
+    const board: GameBoardSquare[][] = [];
     letters.forEach((v, i) => {
       const row = Math.floor(i / size);
       const col = i % size;
@@ -347,8 +360,23 @@ export class HomePage implements OnInit {
     return board;
   }
 
-  testGame() {
-    return this.gameBoardToString() === this.puzzle.solution[0];
+  async testGame() {
+    const currentSolution = this.gameBoardToString();
+    let isWon = false;
+
+    this.puzzle.solution.forEach(p => {
+      if (p === currentSolution) {
+        isWon = true;
+      }
+    });
+
+    if (isWon) {
+      this.gameOver = true;
+      await this.games.saveProgress(this.puzzle, this.totalMoves);
+      this.clearHintTimer();
+    } else {
+      this.setupHintTimer();
+    }
   }
 
   gameBoardToString() {
@@ -448,13 +476,7 @@ export class HomePage implements OnInit {
 
     this.dragEnd(ev);
 
-    if (this.testGame()) {
-      this.gameOver = true;
-      await this.games.saveProgress(this.puzzle, this.totalMoves);
-      this.clearHintTimer();
-    } else {
-      this.setupHintTimer();
-    }
+    this.testGame();
   }
 
   isLetter(val) {
