@@ -4,7 +4,6 @@ import { GameService } from '../game.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, Platform, ToastController } from '@ionic/angular';
 import { AdMobFreeInterstitialConfig, AdMobFree } from '@ionic-native/admob-free/ngx';
-import { SSL_OP_NO_TLSv1_1 } from 'constants';
 import { GameBoardSquare } from '../game-board-square';
 
 @Component({
@@ -21,7 +20,7 @@ export class HomePage implements OnInit {
       // solution: ['FOURWORDACESMAST']
     };
 
-  letters: string[] = []; // this.puzzle.solution.split('').sort();
+  letters: GameBoardSquare[] = []; // this.puzzle.solution.split('').sort();
   totalMoves = 0;
   isDebugging: boolean = isDevMode();
   isMuted: boolean;
@@ -169,7 +168,11 @@ export class HomePage implements OnInit {
       this.gameBoard.push(row);
     }
 
-    this.letters = this.puzzle.solution[0].split('').sort();
+    this.letters =
+      this.puzzle.solution[0]
+        .split('')
+        .sort()
+        .map((e) => ({ letter: e }));
 
     if (this.puzzle.level % 3 === 0) {
       this.launchInterstitial();
@@ -277,7 +280,7 @@ export class HomePage implements OnInit {
       this.gameBoard = this.puzzleToGameBoard(this.puzzle);
       this.gameBoard[0][0] = { letter: '*' };
       this.letters = [];
-      this.letters.push(this.puzzle.solution[0][0]);
+      this.letters.push({ letter: this.puzzle.solution[0][0] });
       this.isRecycling = false;
     }, 1000);
   }
@@ -350,13 +353,13 @@ export class HomePage implements OnInit {
     ev.dataTransfer.effectAllowed = 'move';
 
     // Remove the letter from the drag source
-    window.setTimeout( () => {
-      if (dropSource.set === 'board') {
-        this.gameBoard[dropSource.row][dropSource.col] = { letter: '*' };
-      } else {
-        this.letters.splice(row, 1);
-      }
-    }, 5);
+    // window.setTimeout( () => {
+    //   if (dropSource.set === 'board') {
+    //     this.gameBoard[dropSource.row][dropSource.col] = { letter: '*' };
+    //   } else {
+    //     this.letters.splice(row, 1);
+    //   }
+    // }, 5);
   }
 
   dragEnter(ev) {
@@ -418,7 +421,7 @@ export class HomePage implements OnInit {
       boardboard: (src, dest) => {
         // Dragging a tile from one game board cell to another.
         this.gameBoard[src.row][src.col] = this.gameBoard[dest.row][dest.col];
-        this.gameBoard[dest.row][dest.col] = src.letter;
+        this.gameBoard[dest.row][dest.col] = src;
         this.totalMoves++;
       },
       shelfshelf: (src, dest) => {
@@ -427,19 +430,19 @@ export class HomePage implements OnInit {
       shelfboard: (src, dest) => {
         // Dragging a tile from the shelf to the game board.
         const tmp = this.gameBoard[dest.row][dest.col];
-        this.gameBoard[dest.row][dest.col] = { letter: this.letters[src.row] };
-        if (this.isLetter(tmp)) {
+        this.gameBoard[dest.row][dest.col] = this.letters[src.row];
+        if (this.isLetter(tmp.letter)) {
           // Swap
-          this.letters[src.row] = tmp.letter;
+          this.letters[src.row] = tmp;
         } else {
           // Remove it
-          // this.letters.splice(src.row, 1);
+          this.letters.splice(src.row, 1);
         }
         this.totalMoves++;
       },
       boardshelf: (src, dest) => { // Dragging a tile from the game board to the shelf.
-        this.letters.push(this.gameBoard[src.row][src.col].letter);
-        // this.gameBoard[src.row][src.col] = { letter: '*' };
+        this.letters.push(this.gameBoard[src.row][src.col]);
+        this.gameBoard[src.row][src.col] = { letter: '*' };
         this.totalMoves++;
       }
     };

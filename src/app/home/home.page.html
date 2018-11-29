@@ -48,7 +48,7 @@
       <ng-container *ngFor="let e of letters; let i=index">
         <div class="tile">
           <div (dragstart)="dragStart($event, 'shelf', i, -1, e)" [draggable]="true">
-            <img [src]="url(e)" [alt]="e" class="tile-image">
+            <img [src]="url(e.letter)" [alt]="e" class="tile-image">
           </div>
         </div>
       </ng-container>
