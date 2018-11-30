@@ -1,6 +1,6 @@
 {
   "name": "foreword",
-  "version": "18.11.27",
+  "version": "18.11.28",
   "author": "Michael Callaghan",
   "homepage": "http://walkingriver.com/",
   "scripts": {
@@ -12,8 +12,8 @@
     "e2e": "ng e2e",
     "version": "cordova-version-sync",
     "prepare": "cp $HOME/.ssh/wr.keystore platforms/android && cp $HOME/.ssh/*.properties platforms/android",
-    "release:android": "ionic cordova build android --release",
-    "release:ios": "ionic cordova build ios --release",
+    "release:android": "ionic cordova build --prod android --release",
+    "release:ios": "ionic cordova build --prod ios --release",
     "release:both": "run-s release:android release:ios",
     "release": "run-s prepare version:patch release:both",
     "version:patch": "npm --no-git-tag-version version patch",
