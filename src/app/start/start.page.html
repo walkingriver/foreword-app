@@ -10,11 +10,53 @@
       <p>ForeWord is a game of Word Squares, a special type of word puzzle, consisting of words that can be read both
         horizontally and vertically. Challenge yourself and exercise your brain.</p>
       <h2>Start a New Game</h2>
-      <ion-button size="large" color="primary" href="/home/3">3 x 3</ion-button>
-      <ion-button size="large" color="primary" href="/home/4">4 x 4</ion-button>
-      <ion-button size="large" expand="block" color="primary" href="/Intro" fill="clear">How to Play</ion-button>
-      <ion-button size="large" expand="block" color="primary" href="/Privacy" fill="clear">Privacy Policy</ion-button>
-      <ion-button size="large" expand="block" color="primary" href="/Terms" fill="clear">Terms of Service</ion-button>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button size="small" expand="block" color="primary" href="/home/3/random">3 x 3</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button size="small" expand="block" color="primary" href="/home/4/random">4 x 4</ion-button>
+          </ion-col>
+        </ion-row>
+        <!-- <ion-row>
+          <ion-col>
+            <h3>3 x 3</h3>
+          </ion-col>
+          <ion-col>
+              <h3>4 x 4</h3>
+          </ion-col>
+        </ion-row> -->
+        <!-- <ion-row>
+          <ion-col>
+            <ion-button size="small" expand="block" color="primary" [href]="progressUrl(3)">
+              Next ({{progress(3)}})</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button size="small" expand="block" color="primary" [href]="progressUrl(4)">
+              Next ({{progress(4)}})</ion-button>
+          </ion-col>
+        </ion-row> -->
+        <!-- <ion-row>
+          <ion-col>
+            <ion-button size="small" expand="block" color="primary" href="/home/3/random">Random</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button size="small" expand="block" color="primary" href="/home/4/random">Random</ion-button>
+          </ion-col>
+        </ion-row> -->
+        <!-- <ion-row>
+          <ion-col>
+            <ion-button size="small" expand="block" color="primary" href="/home/3/choose">Choose</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button size="small" expand="block" color="primary" href="/home/4/choose">Choose</ion-button>
+          </ion-col>
+        </ion-row> -->
+      </ion-grid>
+      <ion-button size="small" expand="block" color="primary" href="/Intro" fill="clear">How to Play</ion-button>
+      <ion-button size="small" expand="block" color="primary" href="/Privacy" fill="clear">Privacy Policy</ion-button>
+      <ion-button size="small" expand="block" color="primary" href="/Terms" fill="clear">Terms of Service</ion-button>
       <!-- <ion-button size="large" expand="block" color="primary" href="/About" fill="clear">About ForeWord</ion-button> -->
     </div>
   </div>

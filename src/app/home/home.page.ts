@@ -44,6 +44,7 @@ export class HomePage implements OnInit {
   hints: number;
   interval: number;
   hintOrder: number[];
+  level: any;
 
   constructor(
     private admob: AdMobFree,
@@ -54,20 +55,27 @@ export class HomePage implements OnInit {
     private toastController: ToastController,
     route: ActivatedRoute) {
     this.gameSize = route.snapshot.params['order'];
+    this.level = route.snapshot.params['level'];
   }
 
   async ngOnInit() {
     await this.platform.ready();
     this.isiOS = this.platform.is('ios');
     this.loadSounds();
-    const progress = (await this.games.getHighestLevel()) || { 3: 0, 4: 0, 5: 0 };
-    let nextLevel = 0;
-    if (progress[this.gameSize]) {
-      nextLevel = progress[this.gameSize] + 1;
-    }
     this.hints = await this.games.getRemainingHints();
-    this.loadLevel(nextLevel);
-    // this.newGame();
+    const progress = (await this.games.getHighestLevel()) || { 3: 0, 4: 0, 5: 0 };
+
+    let nextLevel = 0;
+    if (this.level === 'next') {
+      if (progress[this.gameSize]) {
+        nextLevel = progress[this.gameSize] + 1;
+      }
+    } else if (this.level === 'random') {
+      this.randomLevel();
+    } else {
+      nextLevel = this.level;
+      this.loadLevel(nextLevel);
+    }
   }
 
   setupHintTimer() {
@@ -88,7 +96,7 @@ export class HomePage implements OnInit {
 
   async suggestHint() {
     const toast = await this.toastController.create({
-      message: 'Need a hint? Click the lightbulb in the title bar.',
+      message: 'Need a hint? Click the light bulb in the title bar.',
       showCloseButton: false,
       position: 'bottom',
       duration: 2500,
@@ -198,11 +206,11 @@ export class HomePage implements OnInit {
 
   async newGame() {
     if (!this.isMuted) {
-      try {
-        await this.shuffleSound.play();
-      } catch (error) {
-        // We can ignore this error.
-      }
+      this.shuffleSound
+        .play()
+        .catch(error => {
+          // We can ignore sound player errors
+        });
     }
 
     this.gameOver = false;
@@ -258,19 +266,23 @@ export class HomePage implements OnInit {
   }
 
   launchInterstitial() {
-    const interstitialConfig: AdMobFreeInterstitialConfig = {
-      isTesting: this.isDebugging,
-      autoShow: true,
-      id: this.isiOS
-        ? 'ca-app-pub-5422413832537104/6868524515'
-        : 'ca-app-pub-5422413832537104/2046732230'
-    };
+    try {
+      const interstitialConfig: AdMobFreeInterstitialConfig = {
+        isTesting: this.isDebugging,
+        autoShow: true,
+        id: this.isiOS
+          ? 'ca-app-pub-5422413832537104/6868524515'
+          : 'ca-app-pub-5422413832537104/2046732230'
+      };
 
-    this.admob.interstitial.config(interstitialConfig);
+      this.admob.interstitial.config(interstitialConfig);
 
-    this.admob.interstitial.prepare().then(() => {
-      // success
-    });
+      this.admob.interstitial.prepare().then(() => {
+        // success
+      });
+    } catch (e) {
+      // We can ignore errors due to admob and cordova here
+    }
   }
 
   resetGame() {
@@ -281,8 +293,24 @@ export class HomePage implements OnInit {
     }
   }
 
+  nextGame() {
+    if (this.level === 'random') {
+      this.randomLevel();
+    } else if (this.level === 'next') {
+      this.nextLevel();
+    } else {
+      // number
+      // Do something else here, but what?
+    }
+  }
+
   nextLevel() {
     this.loadLevel(this.puzzle.level + 1);
+  }
+
+  randomLevel() {
+    const nextLevel = this.games.getRandomLevel(this.gameSize);
+    this.loadLevel(nextLevel);
   }
 
   prevLevel() {
@@ -518,12 +546,11 @@ export class HomePage implements OnInit {
     swapFn[funcKey](source, destination);
 
     if (!this.isMuted) {
-      try {
-
-        await this.dropSounds[funcKey].play();
-      } catch (e) {
-        // It's OK to ignore a sound play error
-      }
+      this.dropSounds[funcKey]
+        .play()
+        .catch(error => {
+          // We can ignore sound player errors
+        });
     }
   }
 }

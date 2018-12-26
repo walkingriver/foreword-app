@@ -1,6 +1,6 @@
 {
   "name": "foreword",
-  "version": "18.11.28",
+  "version": "18.11.29",
   "author": "Michael Callaghan",
   "homepage": "http://walkingriver.com/",
   "scripts": {
@@ -19,7 +19,7 @@
     "version:patch": "npm --no-git-tag-version version patch",
     "version:minor": "npm --no-git-tag-version version minor",
     "open:ios": "open platforms/ios/*.xcworkspace/",
-    "open:android": "open platforms/android/build/outputs/apk/release/"
+    "open:android": "open platforms/android/app/build/outputs/apk/release/"
   },
   "private": true,
   "dependencies": {

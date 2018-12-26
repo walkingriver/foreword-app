@@ -3,21 +3,26 @@ import { Injectable } from '@angular/core';
 import { Puzzle } from './puzzle';
 import { games4 } from './games-4';
 import { games3 } from './games-3';
+import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
+  puzzles = {
+    3: games3,
+    4: games4
+    // 5: games5
+  };
+
   constructor(private storage: Storage) { }
 
-  getByLevel(size: number, level: number): Puzzle {
-    const puzzles = {
-      3: games3,
-      4: games4
-      // 5: games5
-    };
+  getRandomLevel(gameSize: number): number {
+    return Math.floor(Math.random() * this.puzzles[gameSize].length);
+  }
 
-    const puzzle = puzzles[size][level];
+  getByLevel(size: number, level: number): Puzzle {
+    const puzzle = this.puzzles[size][level];
     puzzle.level = level;
     return puzzle;
   }
@@ -40,9 +45,9 @@ export class GameService {
 
   async getRemainingHints(): Promise<number> {
     let hints = await this.storage.get('hints');
-    if (hints === null) {
+    if (hints === null || hints < 100) {
       // One time gift of hints
-      hints = 100;
+      hints = 1000;
       await this.storage.set('hints', hints);
     }
     return hints;
