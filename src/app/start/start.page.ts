@@ -34,4 +34,9 @@ export class StartPage implements OnInit {
     level++;
     return `/home/${order}/${level}`;
   }
+
+  randomUrl(order: number) {
+    const nextLevel = this.games.getRandomLevel(order);
+    return `/home/${order}/${nextLevel}`;
+  }
 }
