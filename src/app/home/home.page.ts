@@ -22,6 +22,7 @@ export class HomePage implements OnInit {
 
   letters: GameBoardSquare[] = []; // this.puzzle.solution.split('').sort();
   totalMoves = 0;
+  hintsUsed = 0;
   isDebugging: boolean = isDevMode();
   isMuted: boolean;
   gameSize = 4;
@@ -139,8 +140,8 @@ export class HomePage implements OnInit {
     } else {
       // b. The one we need is on the board.
       const boardTile = ([] as GameBoardSquare[])
-          .concat(...this.gameBoard)
-          .find(val => (val.letter === letter) && (! val.isLocked));
+        .concat(...this.gameBoard)
+        .find(val => (val.letter === letter) && (!val.isLocked));
 
       // Put it where it belongs and lock it.
       targetTile.letter = boardTile.letter;
@@ -155,6 +156,7 @@ export class HomePage implements OnInit {
 
     // Then decrement the hints.
     this.hints = await this.games.decrementHints();
+    this.hintsUsed++;
 
     // And finally, check to see if the game is won.
     this.testGame();
@@ -184,6 +186,7 @@ export class HomePage implements OnInit {
 
     this.gameOver = false;
     this.totalMoves = 0;
+    this.hintsUsed = 0;
 
     // This will either compute to 3, 4, or 5.
     const square = this.puzzle.size / this.puzzle.solution.length;

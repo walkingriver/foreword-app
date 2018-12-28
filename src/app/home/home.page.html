@@ -54,7 +54,12 @@
       </ng-container>
     </div>
     <div class="title" *ngIf="gameOver">
-      <h2>You Win!</h2>
+      <h1>Congratulations!</h1>
+      <p>You completed Puzzle {{puzzle.level}} in {{totalMoves}} moves, using
+        {{hintsUsed}}
+        <span *ngIf="hintsUsed===1">hint</span>
+        <span *ngIf="hintsUsed!==1">hints</span>.
+      </p>
       <ion-button size="large" color="primary" (click)="startPage()">Home</ion-button>
     </div>
   </div>
