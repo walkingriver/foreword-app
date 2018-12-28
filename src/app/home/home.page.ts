@@ -287,7 +287,7 @@ export class HomePage implements OnInit {
   }
 
   startPage() {
-    if (this.totalMoves) {
+    if (!this.gameOver && this.totalMoves) {
       this.presentAlertConfirm(() => this.goToStart());
     } else {
       this.goToStart();
