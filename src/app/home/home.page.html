@@ -60,7 +60,16 @@
         <span *ngIf="hintsUsed===1">hint</span>
         <span *ngIf="hintsUsed!==1">hints</span>.
       </p>
-      <ion-button size="large" color="primary" (click)="startPage()">Home</ion-button>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button expand="block" size="large" color="primary" (click)="startPage()">Home</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button expand="block" size="large" color="primary" (click)="randomLevel()">Next</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </div>
   </div>
   <ion-fab *ngIf="!gameOver" vertical="bottom" horizontal="end" slot="fixed">
