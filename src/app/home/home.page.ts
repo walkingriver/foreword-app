@@ -108,7 +108,7 @@ export class HomePage implements OnInit {
 
   async useHint() {
     // Figure out how to use a hint here.
-    // First, get the first element from the hint order.
+    // First, get the "next" element from the hint order.
     const position = this.hintOrder.shift();
 
     // We'll always work from the first solution, since we have no way
@@ -121,68 +121,37 @@ export class HomePage implements OnInit {
     const col = position % this.gameSize;
     const targetTile = this.gameBoard[row][col];
 
-    // At this point, we have the following possibilities
+    // Remove whatever tile that may already be there
     if (this.isLetter(targetTile.letter)) {
-      // 1. There is a tile at that position.
-      // 1a. The tile at that position is already correct.
-      if (targetTile.letter === letter) {
-        targetTile.isLocked = true;
-      } else {
-        // 1b. There is an incorrect tile at that point.
-        // Move it to the shelf immediately.
-        this.letters.push({ letter: targetTile.letter });
-
-        // Now there are two more possibilities
-        // 1c. The one we need is on the shelf, which is what we want
-        const shelfIndex = this.letters.findIndex((val) => val.letter === letter);
-        if (shelfIndex >= 0) {
-          // Remove it from the shelf
-          this.letters.splice(shelfIndex, 1);
-
-          // Add it to the board and lock it.
-          targetTile.letter = letter;
-        } else {
-          // 1d. The one we need is on the board.
-          const boardTile =
-            ([] as GameBoardSquare[]).concat(...this.gameBoard).find(val => val.letter === letter);
-
-          // Put it where it belongs.
-          targetTile.isLocked = true;
-          targetTile.letter = letter;
-
-          // And empty the square it used to occupy
-          boardTile.letter = '*';
-        }
-
-        // And lock it
-        targetTile.isLocked = true;
-      }
-    } else {
-      // 2. There is no tile at that point.
-      // Now there are two more possibilities
-      // 2a. The one we need is on the shelf, which is what we want
-      const shelfIndex = this.letters.findIndex((val) => val.letter === letter);
-      if (shelfIndex >= 0) {
-        // Remove it from the shelf
-        this.letters.splice(shelfIndex, 1);
-
-        // Add it to the board.
-        targetTile.letter = letter;
-      } else {
-        // 2b. The one we need is on the board.
-        const boardTile =
-          ([] as GameBoardSquare[]).concat(...this.gameBoard).find(val => val.letter === letter);
-
-        // Put it where it belongs and lock it.
-        targetTile.isLocked = true;
-
-        // And empty the square it used to occupy
-        boardTile.letter = '*';
-      }
-
-      // And lock it
-      targetTile.isLocked = true;
+      this.letters.push({ letter: targetTile.letter });
     }
+
+    // Now the tile is empty, ready to receive this one.
+    // Now there are two possibilities
+    // a. The one we need is on the shelf, which is what we want
+    const shelfIndex = this.letters.findIndex((val) => val.letter === letter);
+    if (shelfIndex >= 0) {
+      // Remove it from the shelf
+      this.letters.splice(shelfIndex, 1);
+
+      // Add it to the board.
+      targetTile.letter = letter;
+    } else {
+      // b. The one we need is on the board.
+      const boardTile = ([] as GameBoardSquare[])
+          .concat(...this.gameBoard)
+          .find(val => (val.letter === letter) && (! val.isLocked));
+
+      // Put it where it belongs and lock it.
+      targetTile.letter = boardTile.letter;
+      targetTile.isLocked = true;
+
+      // And empty the square it used to occupy
+      boardTile.letter = '*';
+    }
+
+    // And lock it
+    targetTile.isLocked = true;
 
     // Then decrement the hints.
     this.hints = await this.games.decrementHints();
