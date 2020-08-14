@@ -98,11 +98,9 @@ export class HomePage implements OnInit {
   async suggestHint() {
     const toast = await this.toastController.create({
       message: 'Need a hint? Click the light bulb in the title bar.',
-      showCloseButton: false,
       position: 'bottom',
       duration: 2500,
-      translucent: true,
-      closeButtonText: 'No'
+      translucent: true
     });
     toast.present();
   }

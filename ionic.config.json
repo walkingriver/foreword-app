@@ -1,7 +1,8 @@
 {
   "name": "wurdz",
   "integrations": {
-    "cordova": {}
+    "cordova": {},
+    "capacitor": {}
   },
   "type": "angular"
 }
