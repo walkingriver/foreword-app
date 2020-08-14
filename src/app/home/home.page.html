@@ -48,29 +48,29 @@
   </div>
   <ion-fab *ngIf="!gameOver" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button id="prefs-button">
-      <ion-icon size="mini" name="settings" color="dark"></ion-icon>
+      <ion-icon size="mini" md="settings-sharp" ios="settings-outline" color="dark"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top">
       <ion-fab-button (click)="newGame()" [disabled]="!totalMoves">
-        <ion-icon color="dark" name="refresh"></ion-icon>
+        <ion-icon color="dark" md="refresh-sharp" ios="refresh-outline"></ion-icon>
       </ion-fab-button>
       <ion-fab-button (click)="nextLevel()" *ngIf="isDebugging">
-        <ion-icon color="dark" name="arrow-round-forward"></ion-icon>
+        <ion-icon color="dark" md="chevron-forward-sharp" ios="chevron-forward-outline"></ion-icon>
       </ion-fab-button>
       <ion-fab-button (click)="prevLevel()" *ngIf="isDebugging">
-        <ion-icon color="dark" name="arrow-round-back"></ion-icon>
+        <ion-icon color="dark" md="chevron-back-sharp" ios="chevron-back-outline"></ion-icon>
       </ion-fab-button>
       <ion-fab-button (click)="winLevel()" *ngIf="isDebugging">
-        <ion-icon color="dark" name="redo"></ion-icon>
+        <ion-icon color="dark" md="arrow-redo-sharp" ios="arrow-redo-outline"></ion-icon>
       </ion-fab-button>
       <ion-fab-button (click)="startPage()">
-        <ion-icon color="dark" name="home"></ion-icon>
+        <ion-icon color="dark" md="home-sharp" ios="home-outline"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="isMuted" (click)="isMuted = false">
-        <ion-icon color="dark" name="volume-off"></ion-icon>
+        <ion-icon color="dark" md="volume-off-sharp" ios="volume-off-outline"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="!isMuted" (click)="isMuted = true">
-        <ion-icon color="dark" name="volume-high"></ion-icon>
+        <ion-icon color="dark" md="volume-high-sharp" ios="volume-high-outline"></ion-icon>
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
