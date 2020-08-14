@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">foreword</string>
+    <string name="title_activity_main">foreword</string>
+    <string name="package_name">com.walkingriver.foreword</string>
+    <string name="custom_url_scheme">com.walkingriver.foreword</string>
+</resources>
