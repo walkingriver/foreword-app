@@ -1,19 +1,11 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="secondary">
-      <ion-button>Puzzle:
-        {{puzzle.level}}
-      </ion-button>
-    </ion-buttons>
-    <ion-buttons slot="primary">
-      <ion-button [disabled]="!canHint()" (click)="useHint()">
-        <ion-badge color="tertiary">{{hints}}</ion-badge>
-        <ion-ripple-effect></ion-ripple-effect>
-        <ion-icon name="bulb">
-        </ion-icon>
-      </ion-button>
-    </ion-buttons>
     <ion-title>{{puzzle.size}} Words</ion-title>
+    <ion-buttons slot="end">
+      <ion-label>Puzzle:
+        {{puzzle.level}}
+      </ion-label>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -24,27 +16,29 @@
     <div class="flex-container game-board" padding (dragover)="dragOver($event)" (dragend)="dragEnd($event)">
       <ng-container *ngFor="let row of gameBoard; let r=index">
         <div class="flex-cell board" *ngFor="let gbs of row; let c=index">
-          <div *ngIf="isDragSource(gbs) && isDropTarget(gbs)" class="flex-item board-tile" (dragstart)="dragStart($event, 'board', r, c, gbs.letter)"
-            draggable="true" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)" (drop)="drop($event, 'board', r, c)">
-            <img [src]="url(gbs.letter)" [alt]="gbs.letter" class="tile-image">
-          </div>
-          <div *ngIf="isDragSource(gbs) && !isDropTarget(gbs)" class="flex-item board-tile" (dragstart)="dragStart($event, 'board', r, c, gbs.letter)"
-            draggable="true">
-            <img [src]="url(gbs.letter)" [alt]="gbs.letter" class="tile-image">
-          </div>
-          <div *ngIf="isDropTarget(gbs) && !isDragSource(gbs)" class="flex-item board-tile" (dragenter)="dragEnter($event)"
+          <div *ngIf="isDragSource(gbs) && isDropTarget(gbs)" class="flex-item board-tile"
+            (dragstart)="dragStart($event, 'board', r, c, gbs.letter)" draggable="true" (dragenter)="dragEnter($event)"
             (dragleave)="dragLeave($event)" (drop)="drop($event, 'board', r, c)">
             <img [src]="url(gbs.letter)" [alt]="gbs.letter" class="tile-image">
           </div>
-          <div *ngIf="!isDragSource(gbs) && !isDropTarget(gbs)" class="flex-item board-tile is-locked" draggable="false">
+          <div *ngIf="isDragSource(gbs) && !isDropTarget(gbs)" class="flex-item board-tile"
+            (dragstart)="dragStart($event, 'board', r, c, gbs.letter)" draggable="true">
+            <img [src]="url(gbs.letter)" [alt]="gbs.letter" class="tile-image">
+          </div>
+          <div *ngIf="isDropTarget(gbs) && !isDragSource(gbs)" class="flex-item board-tile"
+            (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)" (drop)="drop($event, 'board', r, c)">
+            <img [src]="url(gbs.letter)" [alt]="gbs.letter" class="tile-image">
+          </div>
+          <div *ngIf="!isDragSource(gbs) && !isDropTarget(gbs)" class="flex-item board-tile is-locked"
+            draggable="false">
             <img [src]="url(gbs.letter)" [alt]="gbs.letter" class="tile-image">
           </div>
         </div>
       </ng-container>
     </div>
 
-    <div *ngIf="!gameOver" class="shelf" (drop)="drop($event, 'shelf')" (dragenter)="dragEnter($event)" (dragleave)="dragLeave($event)"
-      (dragover)="dragOver($event)">
+    <div *ngIf="!gameOver" class="shelf" (drop)="drop($event, 'shelf')" (dragenter)="dragEnter($event)"
+      (dragleave)="dragLeave($event)" (dragover)="dragOver($event)">
       <ng-container *ngFor="let e of letters; let i=index">
         <div class="tile">
           <div (dragstart)="dragStart($event, 'shelf', i, -1, e)" [draggable]="true">
@@ -80,6 +74,29 @@
       <ion-fab-button (click)="newGame()" [disabled]="!totalMoves">
         <ion-icon color="dark" md="refresh-sharp" ios="refresh-outline"></ion-icon>
       </ion-fab-button>
+      <ion-fab-button (click)="startPage()">
+        <ion-icon color="dark" md="home-sharp" ios="home-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="isMuted" (click)="isMuted = false">
+        <ion-icon color="dark" md="volume-off-sharp" ios="volume-off-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="!isMuted" (click)="isMuted = true">
+        <ion-icon color="dark" md="volume-high-sharp" ios="volume-high-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="showHints()">
+        <ion-icon color="dark" name="bulb"></ion-icon>
+      </ion-fab-button>
+      <!-- <ion-fab-button (click)="showHints()">
+        <ion-icon color="dark" name="cash">
+        </ion-icon>
+      </ion-fab-button> -->
+    </ion-fab-list>
+  </ion-fab>
+  <ion-fab *ngIf="isDebugging" vertical="bottom" horizontal="left" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="bug"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
       <ion-fab-button (click)="nextLevel()" *ngIf="isDebugging">
         <ion-icon color="dark" md="chevron-forward-sharp" ios="chevron-forward-outline"></ion-icon>
       </ion-fab-button>
@@ -95,15 +112,6 @@
       <ion-fab-button (click)="addHints(25)" *ngIf="isDebugging">
         <ion-icon color="dark" name="bulb"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button (click)="startPage()">
-        <ion-icon color="dark" md="home-sharp" ios="home-outline"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button *ngIf="isMuted" (click)="isMuted = false">
-        <ion-icon color="dark" md="volume-off-sharp" ios="volume-off-outline"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button *ngIf="!isMuted" (click)="isMuted = true">
-        <ion-icon color="dark" md="volume-high-sharp" ios="volume-high-outline"></ion-icon>
-      </ion-fab-button>
     </ion-fab-list>
-  </ion-fab>
+    </ion-fab>
 </ion-content>

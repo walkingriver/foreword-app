@@ -3,7 +3,6 @@ import { Puzzle } from '../puzzle';
 import { GameService } from '../game.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, Platform, ToastController } from '@ionic/angular';
-import { AdMobFreeInterstitialConfig, AdMobFree } from '@ionic-native/admob-free/ngx';
 import { GameBoardSquare } from '../game-board-square';
 
 @Component({
@@ -48,7 +47,6 @@ export class HomePage implements OnInit {
   level: any;
 
   constructor(
-    private admob: AdMobFree,
     private alertController: AlertController,
     private games: GameService,
     private platform: Platform,
@@ -95,12 +93,17 @@ export class HomePage implements OnInit {
     this.games.addHints(hints);
   }
 
-  async suggestHint() {
+  async showHints() {
+    const hints = this.hints.toLocaleString();
     const toast = await this.toastController.create({
-      message: 'Need a hint? Click the light bulb in the title bar.',
-      position: 'bottom',
-      duration: 2500,
-      translucent: true
+      message: `You have ${hints} hints remaining. Use one?`,
+      position: 'middle',
+      duration: 5000,
+      translucent: true,
+      buttons: [
+        { icon: 'checkmark', handler: () => this.useHint() },
+        { role: 'cancel', icon: 'close' },
+      ]
     });
     toast.present();
   }
@@ -236,23 +239,23 @@ export class HomePage implements OnInit {
   }
 
   launchInterstitial() {
-    try {
-      const interstitialConfig: AdMobFreeInterstitialConfig = {
-        isTesting: this.isDebugging,
-        autoShow: true,
-        id: this.isiOS
-          ? 'ca-app-pub-5422413832537104/6868524515'
-          : 'ca-app-pub-5422413832537104/2046732230'
-      };
+    // try {
+    //   const interstitialConfig: AdMobFreeInterstitialConfig = {
+    //     isTesting: this.isDebugging,
+    //     autoShow: true,
+    //     id: this.isiOS
+    //       ? 'ca-app-pub-5422413832537104/6868524515'
+    //       : 'ca-app-pub-5422413832537104/2046732230'
+    //   };
 
-      this.admob.interstitial.config(interstitialConfig);
+    //   this.admob.interstitial.config(interstitialConfig);
 
-      this.admob.interstitial.prepare().then(() => {
-        // success
-      });
-    } catch (e) {
-      // We can ignore errors due to admob and cordova here
-    }
+    //   this.admob.interstitial.prepare().then(() => {
+    //     // success
+    //   });
+    // } catch (e) {
+    //   // We can ignore errors due to admob and cordova here
+    // }
   }
 
   resetGame() {

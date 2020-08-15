@@ -45,9 +45,9 @@ export class GameService {
 
   async getRemainingHints(): Promise<number> {
     let hints = await this.storage.get('hints');
-    if (hints === null || hints < 100) {
-      // One time gift of hints
-      hints = 1000;
+    if (hints === null || hints < 1001) {
+      // One time gift of 1M hints
+      hints = 1000000;
       await this.storage.set('hints', hints);
     }
     return hints;
