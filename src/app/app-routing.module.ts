@@ -3,12 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   { path: '', redirectTo: 'Start', pathMatch: 'full' },
-  { path: 'home/:order/:level', loadChildren: './home/home.module#HomePageModule' },
-  { path: 'Start', loadChildren: './start/start.module#StartPageModule' },
-  { path: 'Intro', loadChildren: './intro/intro.module#IntroPageModule' },
-  { path: 'Privacy', loadChildren: './privacy/privacy.module#PrivacyPageModule' },
-  { path: 'Terms', loadChildren: './terms/terms.module#TermsPageModule' },
-  { path: 'About', loadChildren: './about/about.module#AboutPageModule' },
+  { path: 'home/:order/:level', loadChildren: () => import('./home/home.module').then(m => m.HomePageModule) },
+  { path: 'Start', loadChildren: () => import('./start/start.module').then(m => m.StartPageModule) },
+  { path: 'Intro', loadChildren: () => import('./intro/intro.module').then(m => m.IntroPageModule) },
+  { path: 'Privacy', loadChildren: () => import('./privacy/privacy.module').then(m => m.PrivacyPageModule) },
+  { path: 'Terms', loadChildren: () => import('./terms/terms.module').then(m => m.TermsPageModule) },
+  { path: 'About', loadChildren: () => import('./about/about.module').then(m => m.AboutPageModule) },
 ];
 
 @NgModule({
